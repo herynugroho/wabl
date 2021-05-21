@@ -1,0 +1,73 @@
+.pulse{
+	animation: mymove 2s infinite;
+	box-shadow: 0 0 10 black;
+	position: relative;
+	z-index: 999;
+}
+
+@keyframes mymove{
+	0% {
+		-moz-box-shadow: 0 0 0 0 rgba(255,0,0, 0.4);
+		box-shadow: 0 0 0 0 rgba(255,0,0, 0.4);
+	}
+	70% {
+		-moz-box-shadow: 0 0 0 100px rgba(255,0,0, 0);
+		box-shadow: 0 0 0 100px rgba(255,0,0, 0);
+	}
+	100% {
+		-moz-box-shadow: 0 0 0 0 rgba(255,0,0, 0);
+		box-shadow: 0 0 0 0 rgba(255,0,0, 0);
+	}
+}
+
+.pulse-info{
+	animation: mymoveinfo 2s infinite;
+	box-shadow: 0 0 10 black;
+	position: relative;
+	z-index: 999;
+}
+
+@keyframes mymoveinfo{
+	0% {
+		-moz-box-shadow: 0 0 0 0 rgba(0,207,232, 0.4);
+		box-shadow: 0 0 0 0 rgba(0,207,232, 0.4);
+	}
+	70% {
+		-moz-box-shadow: 0 0 0 100px rgba(0,207,232, 0);
+		box-shadow: 0 0 0 100px rgba(0,207,232, 0);
+	}
+	100% {
+		-moz-box-shadow: 0 0 0 0 rgba(0,207,232, 0);
+		box-shadow: 0 0 0 0 rgba(0,207,232, 0);
+	}
+}
+
+.is-green{
+  background: #85e685;
+  color: black;
+  padding: 20px 50px; 
+}
+.is-blue{
+  background: #7d9de3;
+  color: black;
+  padding: 20px 50px; 
+}
+.is-red{
+  background: #e87b7b;
+  color: black;
+  padding: 20px 50px; 
+}
+
+.group_dropdown{
+	background: #ccc;
+}
+
+.group_item_dropdown{
+	background: #fff;
+}
+/*.vgt-responsive{
+	overflow-x: inherit !important;
+}
+.dropdown-menu{
+	z-index: 9999 !important;
+}*/
