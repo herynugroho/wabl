@@ -1034,9 +1034,23 @@ class SipController extends Controller
         return response()->json(compact('message'), 200);
     }
 
-    public function get_wa(){
+    public function get_wa(Request $request){
+            $user = $request->user;
+            if($user=='3578193110890002'){
+                $mod = 'IN (3,8)';
+            }else if($user=='3512073103870001'){
+                $mod = 'IN (1,6)';
+            }else if($user=='3578202812930001'){
+                $mod = 'IN (2,7)';
+            }else if($user=='3515186906900005'){
+                $mod = 'IN (4,9)';
+            }else if($user=='3512073107780001'){
+                $mod = 'IN (0,5)';
+            }
+            
             $wa_message = DB::select(DB::raw("SELECT wa.id_wa, wa.phone, wa.message, wa.url, TO_TIMESTAMP(wa.timestamp), wa.status, wa.reply, wa.reply_by
             FROM PUBLIC.wa AS wa
+            WHERE MOD(CAST(RIGHT(wa.phone,5) AS INTEGER),9) $mod
             ORDER BY TIMESTAMP DESC"));
             
             if($wa_message){

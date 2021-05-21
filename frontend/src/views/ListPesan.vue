@@ -755,7 +755,7 @@ export default {
         },
         
         listSekolahNegeri(){
-            axios.post('/api/getwa')
+            axios.post('/api/getwa', {user:this.userData.user_id})
                 .then(response=>{
                     this.sekolah_negeri_rows = response.data.wa_message;
                 })
