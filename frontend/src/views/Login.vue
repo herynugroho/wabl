@@ -14,11 +14,12 @@
         class="d-none d-lg-flex align-items-center p-5"
       >
         <div class="w-100 d-lg-flex align-items-center justify-content-center px-5">
-          <b-img
-            src="@/assets/\images\_\_\_\_\wabl\frontend\src\assets\images\logo/login-v2new.png"
-          />
+          <b-link>
+            <img src="@/assets/images/logo/asd.jpg">
+          </b-link>
         </div>
       </b-col>
+      
       <!-- /Left Text-->
 
       <!-- Login-->

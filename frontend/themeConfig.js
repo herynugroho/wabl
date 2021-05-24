@@ -9,7 +9,7 @@ export const $themeBreakpoints = {}
 // APP CONFIG
 export const $themeConfig = {
   app: {
-    appName: 'Sabahat Dispendik',
+    appName: 'Dispendik',
     // eslint-disable-next-line global-require
     appLogoImage: require('@/assets/images/logo/logo.png'),
   },

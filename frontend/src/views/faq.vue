@@ -2,8 +2,8 @@
     <b-card>
         <b-card>
             <vue-good-table
-                :columns="pesan_columns"
-                :rows="pesan_rows"
+                :columns="faq_columns"
+                :rows="faq_rows"
                 :line-numbers="true"
                 
                 :pagination-options="{
@@ -61,7 +61,7 @@
 
                                 <b-dropdown-item 
                                     :disabled="props.row.status_perangkaan==1 || props.row.lock==1"
-                                    variant="success" type="submit" v-b-modal.lihat_pesan @click="pengirim(props.row.phone, props.row.id_wa)"
+                                    variant="success" type="submit" v-b-modal.lihat_pesan @click="pengirim(props.row.phone)"
                                 >
                                     <feather-icon
                                         icon="CheckIcon"
@@ -219,13 +219,12 @@ export default {
                             },
                         });
                         this.$bvModal.hide('modal_konfirmasi_selesai');
-                        this.listSekolahNegeri();
+                        this.listWa();
                 })
         },
 
-        pengirim(phone, id){
-            this.phone = phone,
-            this.id_wa = id
+        pengirim(phone){
+            this.phone = phone
         },
         kirim_pesan(){
             const instanceAxios = axios.create({
@@ -236,7 +235,7 @@ export default {
                 .then(response=>{
                     const respon = response.data.message;
                     if(respon == 'successfully sent text'){
-                        axios.post('/api/updatewa', {phone: this.phone, nama: this.userData.username, pesan: this.pesan, id: this.id_wa})
+                        axios.post('/api/updatewa', {phone: this.phone, nama: this.userData.username, pesan: this.pesan})
                         this.$toast({
                             component: ToastificationContent,
                             props: {
@@ -246,19 +245,19 @@ export default {
                             },
                         });
                         this.$bvModal.hide('lihat_pesan');
-                        this.listSekolahNegeri();
+                        this.listWa();
                     }
-                    this.listSekolahNegeri();
+                    this.listWa();
                 })
         },
         gambar(url){
             this.filenya = url
         },
         
-        listSekolahNegeri(){
-            axios.post('/api/getwa', {user:this.userData.user_id})
+        listWa(){
+            axios.post('/api/getfaq')
                 .then(response=>{
-                    this.pesan_rows = response.data.wa_message;
+                    this.faq_rows = response.data.faq;
                 })
         },
     },
@@ -268,12 +267,11 @@ export default {
     },
 
     created(){
-        this.listSekolahNegeri()
+        this.listWa()
     },
 
     data(){
         return{
-            id_wa:'',
             phone: '',
             filenya: '',
             pesan: '',
@@ -296,53 +294,19 @@ export default {
             catatan: null,
             jenis_revisi: null,
 
-            pesan_columns: [
+            faq_columns: [
                 {
-                    label: 'Pengirim',
-                    field: 'phone',
-                },
-                {
-                    label: 'Pesan',
-                    field: 'message',
-                },
-                {
-                    label: 'Gambar',
-                    field: 'url',
+                    label: 'Pertanyaan',
+                    field: 'pertanyaan',
                     thClass: 'text-center',
-                    tdClass: 'text-center'
                 },
-                {
-                    label: 'status',
-                    field: 'status',
-                    thClass: 'text-center',
-                    tdClass: 'text-center'
-                },
-                {
-                    label: 'Waktu Masuk',
-                    field: 'to_timestamp',
-                    thClass: 'text-center',
-                    tdClass: 'text-center'
-                },
-                
-                {
-                    label: 'Penjawab',
-                    field: 'reply_by',
-                    thClass: 'text-center',
-                    tdClass: 'text-center'
-                },
-                
                 {
                     label: 'Jawaban',
-                    field: 'reply',
+                    field: 'jawaban',
                     thClass: 'text-center',
-                    tdClass: 'text-center'
-                },
-                {
-                    label: 'Menu',
-                    field: 'aksi',
                 },
             ],
-            pesan_rows: [],
+            faq_rows: [],
 
         }
     }

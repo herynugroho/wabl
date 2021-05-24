@@ -33,18 +33,6 @@ const router = new VueRouter({
         layout: 'full',
       },
     },
-    // {
-    //   path: '/error-404',
-    //   name: 'error-404',
-    //   component: () => import('@/views/error/Error404.vue'),
-    //   meta: {
-    //     layout: 'full',
-    //   },
-    // },
-    // {
-    //   path: '*',
-    //   redirect: 'error-404',
-    // },
     {
       path: '/daftar_pesan',
       name: 'daftar_pesan',
@@ -54,6 +42,20 @@ const router = new VueRouter({
         breadcrumb: [
           {
             text: 'Daftar Pesan',
+            active: true,
+          },
+        ],
+      },
+    },
+    {
+      path: '/faq',
+      name: 'faq',
+      component: () => import('@/views/faq.vue'),
+      meta: {
+        pageTitle: 'F.A.Q',
+        breadcrumb: [
+          {
+            text: 'F.A.Q',
             active: true,
           },
         ],
