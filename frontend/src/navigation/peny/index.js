@@ -22,6 +22,10 @@ export default [
         action: 'read', 
         resource: 'ACL',
       },
+      {
+        title: 'Chat',
+        route: 'chat',
+      },
     ]
   }
 ]
