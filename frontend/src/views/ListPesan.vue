@@ -146,13 +146,19 @@
         </b-modal>
 
         <b-modal id="lihat_pesan" centered hide-footer>
-            <b-card>
-                <b-form-textarea v-model="pesan"/>
-                <b-button @click="kirim_pesan()" variant="success" class="my-1">
-                    <feather-icon
-                        icon="SendIcon"
-                        class="mr-50"/>Balas
-                </b-button>
+            <b-card title="Balas Pesan">
+                <b-form-group>
+                    <b-form-textarea v-model="pesan" class="mb-1" rows="10"/>
+                    <b-form-group label="Kirim Gambar" label-cols-md="4">
+                        <b-form-file v-model="gambar" accept=".jpg"></b-form-file>
+                    </b-form-group>
+                
+                    <b-button @click="kirim_pesan()" variant="success" class="my-1">
+                        <feather-icon
+                            icon="SendIcon"
+                            class="mr-50"/>Balas
+                    </b-button>
+                </b-form-group>
             </b-card>
         </b-modal>
     </b-card>
@@ -160,7 +166,7 @@
 
 <script>
 
-import {BImg, BDropdownDivider, BDropdownItem, BCardText, BDropdownForm, BOverlay, BTable, BButton, BModal, BTab, BTabs, BCard,BFormGroup, BFormInput,BDropdown, BFormSpinbutton, BAlert,BFormSelect, BPagination, BTooltip,BBadge,BFormTextarea,BDropdownGroup} from 'bootstrap-vue'
+import {BFormFile, BImg, BDropdownDivider, BDropdownItem, BCardText, BDropdownForm, BOverlay, BTable, BButton, BModal, BTab, BTabs, BCard,BFormGroup, BFormInput,BDropdown, BFormSpinbutton, BAlert,BFormSelect, BPagination, BTooltip,BBadge,BFormTextarea,BDropdownGroup} from 'bootstrap-vue'
 
 import {VueGoodTable} from 'vue-good-table'
 import {VMoney} from 'v-money'
@@ -177,6 +183,7 @@ import '../@core/assets/css/pulse.css'
 
 export default {
     components:{
+        BFormFile,
         BImg,
         BDropdownDivider,
         BDropdownItem,

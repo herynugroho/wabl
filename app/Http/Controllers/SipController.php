@@ -217,7 +217,7 @@ class SipController extends Controller
             $wa_message = DB::select(DB::raw("SELECT wa.id_wa, wa.phone, wa.message, wa.url, TO_TIMESTAMP(wa.timestamp), wa.status, wa.reply, wa.reply_by
             FROM PUBLIC.wa AS wa
             WHERE MOD(CAST(RIGHT(wa.phone,5) AS INTEGER),9) $mod
-            ORDER BY TIMESTAMP ASC"));
+            ORDER BY wa.status DESC, TIMESTAMP ASC"));
             
             if($wa_message){
                 $message = "success";
