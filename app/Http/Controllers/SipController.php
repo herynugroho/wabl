@@ -239,7 +239,7 @@ class SipController extends Controller
     public function updatewa(Request $request){
         $wa_stat = DB::select(DB::raw("UPDATE PUBLIC.wa
         SET status = 0, reply_by = '$request->nama', reply = '$request->pesan', reply_time = current_timestamp
-        WHERE phone = '$request->phone' and id_wa=$request->id"));
+        WHERE phone = '$request->phone'"));
     }
 
     public function waselesai(Request $request){

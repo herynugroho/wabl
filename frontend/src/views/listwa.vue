@@ -27,41 +27,12 @@
                         </span>
 
                         <span v-else-if="props.column.field == 'aksi'">
-                            <b-button pill variant="primary" type="submit" v-b-modal.lihat_pesan>
+                            <b-button pill variant="primary" type="submit" v-b-modal.lihat_pesan @click="listchat(props.row.phone);pengirim(props.row.phone, props.row.id_wa);">
                                 <feather-icon
                                         icon="EyeIcon"
                                         class="mr-1"
                                     />Lihat
                             </b-button>
-                            <!-- <b-dropdown
-                                variant="flat-secondary"                            
-                                >
-                                <template #button-content>
-                                    <feather-icon
-                                        icon="MenuIcon"
-                                    />
-                                </template>
-
-                                <b-dropdown-item 
-                                    :disabled="props.row.status_perangkaan==1 || props.row.lock==1"
-                                    variant="success" type="submit" v-b-modal.lihat_pesan @click="pengirim(props.row.phone, props.row.id_wa)"
-                                >
-                                    <feather-icon
-                                        icon="CheckIcon"
-                                        class="mr-1"
-                                    /> Balas Pesan
-                                </b-dropdown-item>
-
-                                <b-dropdown-item 
-                                    :disabled="props.row.status_perangkaan==1 || props.row.lock==1"
-                                    variant="danger" type="submit" v-b-modal.modal_konfirmasi_selesai @click="pengirim(props.row.phone)"
-                                >
-                                    <feather-icon
-                                            icon="XIcon"
-                                            class="mr-1"
-                                        />Selesai
-                                </b-dropdown-item>
-                            </b-dropdown> -->
                         </span>
 
                     </template>
@@ -134,19 +105,19 @@
                     <vue-good-table
                         :columns="message_columns"
                         :rows="message_rows"
-                        max-height="400px"
+                        max-height="500px"
                         :fixed-header="true"
                         styleClass="vgt-table"
                         theme="polar-bear"
                     >
                         <template slot="table-row" slot-scope="props">
                             <span v-if="props.column.field == 'message'">
-                                <b-button pill class="text-left" variant="success">{{props.row.message}}</b-button>
-                                <br/>{{props.row.waktu}}
+                                <b-button rounded-circle class="text-left" variant="success">{{props.row.message}}</b-button>
+                                <br/><b-badge variant="light-dark">{{props.row.waktu}}</b-badge>
                             </span>
                             <span v-if="props.column.field == 'reply'&&props.row.reply != null">
-                                <b-button pill class="text-left" variant="secondary">{{props.row.reply}}</b-button>
-                                <br/>{{props.row.waktu}}
+                                <b-button rounded-circle class="text-left" variant="secondary">{{props.row.reply}}</b-button>
+                                <br/><b-badge variant="light-dark">{{props.row.waktu}}</b-badge>
                             </span>
                         </template>
                     </vue-good-table>
@@ -263,8 +234,10 @@ export default {
                         });
                         this.$bvModal.hide('lihat_pesan');
                         this.listwa();
+                        this.listchat();
                     }
                     this.listwa();
+                    this.listchat();
                 })
         },
         blast_pesan(){
@@ -289,8 +262,8 @@ export default {
                 })
         },
 
-        listchat(){
-            axios.post('/api/getchat', {phone: '6282335162038'})
+        listchat(phone){
+            axios.post('/api/getchat', {phone: phone})
                 .then(response=>{
                     this.message_rows = response.data.chat;
                 })
@@ -303,7 +276,7 @@ export default {
 
     created(){
         this.listwa();
-        this.listchat();
+        // this.listchat();
     },
 
     data(){
@@ -371,6 +344,7 @@ export default {
                 {
                     label: 'Balasan',
                     field: 'reply',
+                    type: 'number',
                     width: '100px',
                 }
             ],
