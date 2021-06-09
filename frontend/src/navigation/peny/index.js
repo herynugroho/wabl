@@ -26,6 +26,10 @@ export default [
         title: 'Chat',
         route: 'chat',
       },
+      {
+        title: 'Incoming Whatsapp',
+        route: 'listwa',
+      },
     ]
   }
 ]

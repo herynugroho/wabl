@@ -1,0 +1,18 @@
+ [
+    {
+      "nik": "3515154306740000",
+      "message": "Selamat ulang tahun Kepada Ibu *AMBAR LISTIOWATI S.T*\nSemoga selalu dilimpahkan keberkahan, kesehatan, diberikan perlindungan, dan kelancaran rezeki, serta dimudahkan segala urusan Ibu.\nSeiring dengan bertambahnya usia, Saya berdoa agar semakin menyayangi anak-anak, peduli dan memperhatikan para murid-murid.\n                \nSalam Hormat,\n*Supomo*\n*Kadispendik Surabaya*",
+      "phone": "082336056768",
+      "tgl_lahir": "1974-06-03",
+      "jenis_pegawai": "Guru",
+      "jenis_kelamin": "P"
+    },
+    {
+      "nik": "3515134306610001",
+      "message": "Selamat ulang tahun Kepada Ibu *KINDRIANI NURUL WAHYUKE. S.PD., M.Si*\nSemoga selalu dilimpahkan keberkahan, kesehatan, diberikan perlindungan, dan kelancaran rezeki, serta dimudahkan segala urusan Ibu.\nSeiring dengan bertambahnya usia, Saya berdoa agar semakin menyayangi anak-anak, peduli dan memperhatikan para murid-murid.\n                \nSalam Hormat,\n*Supomo*\n*Kadispendik Surabaya*",
+      "phone": "082336056768",
+      "tgl_lahir": "1961-06-03",
+      "jenis_pegawai": "KS",
+      "jenis_kelamin": "P"
+    }
+]

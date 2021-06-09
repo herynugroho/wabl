@@ -257,9 +257,10 @@ export default {
       // Reset send message input value
       chatInputMessage.value = ''
 
-      store.dispatch('app-chat/getChat', { userId })
+      // 
+      axios.post('/getchat', {phone: this.nohp})
         .then(response => {
-          activeChat.value = response.data
+          activeChat.value = response.data.guru
 
           // Set unseenMsgs to 0
           const contact = chatsContacts.value.find(c => c.id === userId)

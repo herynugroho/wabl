@@ -205,11 +205,15 @@ class SipController extends Controller
             }else if($user=='3512073103870001'){
                 $mod = 'IN (1,6)';
             }else if($user=='3578202812930001'){
-                $mod = 'IN (2,7)';
+                $mod = 'IN (2)';
             }else if($user=='3515186906900005'){
-                $mod = 'IN (3,8)';
+                $mod = 'IN (8)';
             }else if($user=='3512073107780001'){
                 $mod = 'IN (0,5)';
+            }else if($user=='3515181307860004'){
+                $mod = 'IN (3)';
+            }else if($user=='3578242603850001'){
+                $mod = 'IN (7)';
             }else if($user=='199105012015012001'||$user=='198509172009021001'){
                 $mod = 'IN (0,1,2,3,4,5,6,7,8,9)';
             }
@@ -217,7 +221,7 @@ class SipController extends Controller
             $wa_message = DB::select(DB::raw("SELECT wa.id_wa, wa.phone, wa.message, wa.url, TO_TIMESTAMP(wa.timestamp), wa.status, wa.reply, wa.reply_by
             FROM PUBLIC.wa AS wa
             WHERE MOD(CAST(RIGHT(wa.phone,5) AS INTEGER),9) $mod
-            ORDER BY wa.status DESC, TIMESTAMP ASC"));
+            ORDER BY wa.status DESC, TIMESTAMP DESC"));
             
             if($wa_message){
                 $message = "success";
@@ -252,6 +256,84 @@ class SipController extends Controller
         }else{$message = "failed";}
     
     return response()->json(compact('message', 'faq'), 200);
-}
+    }
 
+    public function get_guru(){
+        $saudara = 'Selamat ulang tahun Kepada Bapak ';
+        $saudari = 'Selamat ulang tahun Kepada Ibu ';
+        $pesan_L = '
+Semoga selalu dilimpahkan keberkahan, kesehatan, diberikan perlindungan, dan kelancaran rezeki, serta dimudahkan segala urusan Bapak.
+Seiring dengan bertambahnya usia, Saya berdoa agar semakin menyayangi anak-anak, peduli dan memperhatikan para murid-murid.
+                
+Salam Hormat,
+*Supomo*
+*Kadispendik Surabaya*';
+        $pesan_P = '
+Semoga selalu dilimpahkan keberkahan, kesehatan, diberikan perlindungan, dan kelancaran rezeki, serta dimudahkan segala urusan Ibu.
+Seiring dengan bertambahnya usia, Saya berdoa agar semakin menyayangi anak-anak, peduli dan memperhatikan para murid-murid.
+                
+Salam Hormat,
+*Supomo*
+*Kadispendik Surabaya*';
+        $guru = DB::connection("pgsql_skpbm")->select(DB::raw("SELECT DISTINCT ON (sj.nik) sj.nik, concat((CASE WHEN jenis_kelamin = 'L' THEN '$saudara' WHEN jenis_kelamin = 'P' THEN '$saudari' END), '*',sj.nama_pegawai,'*', (CASE WHEN jenis_kelamin = 'L' THEN '$pesan_L' WHEN jenis_kelamin = 'P' THEN '$pesan_P' END) ) as message, regexp_REPLACE(sj.no_telpon, '-', '') AS phone, sj.tgl_lahir, jenis_pegawai, jenis_kelamin, updated_at
+        FROM PUBLIC.skpbm_jadwal_pegawai AS sj
+        WHERE sj.is_aktif IS TRUE AND (EXTRACT(DAY FROM sj.tgl_lahir) = EXTRACT(DAY FROM CURRENT_TIMESTAMP) AND EXTRACT(MONTH FROM sj.tgl_lahir) = EXTRACT(MONTH FROM CURRENT_TIMESTAMP))
+        AND jenis_pegawai NOT IN ('Pelatih', 'Tendik') AND sj.is_aktif IS TRUE
+        ORDER BY sj.nik, sj.updated_at DESC NULLS LAST"));
+
+        if($guru){
+            $message = "success";
+        }else{$message = "failed";}
+
+        return response()->json(compact('message', 'guru'), 200);
+    }
+
+    public function getchat(Request $request){
+        $chat = DB::select(DB::raw("SELECT phone as senderId, message, TO_TIMESTAMP(TIMESTAMP) as time
+        FROM PUBLIC.wa
+        WHERE phone = '$request->phone'"));
+
+        if($chat){
+            $message = "success";
+        }else{$message = "failed";}
+
+        return response()->json(compact('message', 'chat'), 200);
+
+    }
+
+    public function list_wa(Request $request){
+        $user = $request->user;
+            if($user=='3578193110890002'){
+                $mod = 'IN (4,9)';
+            }else if($user=='3512073103870001'){
+                $mod = 'IN (1,6)';
+            }else if($user=='3578202812930001'){
+                $mod = 'IN (2)';
+            }else if($user=='3515186906900005'){
+                $mod = 'IN (8)';
+            }else if($user=='3512073107780001'){
+                $mod = 'IN (0,5)';
+            }else if($user=='3515181307860004'){
+                $mod = 'IN (3)';
+            }else if($user=='3578242603850001'){
+                $mod = 'IN (7)';
+            }else if($user=='199105012015012001'||$user=='198509172009021001'){
+                $mod = 'IN (0,1,2,3,4,5,6,7,8,9)';
+            }
+
+        $list_wa = DB::select(DB::raw("SELECT * 
+        FROM (SELECT DISTINCT ON (phone) phone, (case when message IS NULL THEN url WHEN message IS NOT NULL THEN message END) as last_message, TO_TIMESTAMP(TIMESTAMP) AS waktu, status, COUNT(CASE WHEN status IS NULL THEN 1 END) AS unread
+        FROM PUBLIC.wa
+        GROUP BY phone, message, TIMESTAMP, status, url
+        ORDER BY phone, TIMESTAMP DESC nulls LAST, status DESC nulls LAST) C
+        WHERE MOD(CAST(RIGHT(C.phone,5) AS INTEGER),9) $mod
+        ORDER BY c.waktu desc"));
+
+        if($list_wa){
+            $message = "success";
+        }else{
+            $message = "failed";}
+        
+            return response()->json(compact('message', 'list_wa'), 200);
+    }
 }

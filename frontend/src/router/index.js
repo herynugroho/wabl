@@ -48,6 +48,20 @@ const router = new VueRouter({
       },
     },
     {
+      path: '/listwa',
+      name: 'listwa',
+      component: () => import('@/views/listwa.vue'),
+      meta: {
+        pageTitle: 'Incoming Whatsapp',
+        breadcrumb: [
+          {
+            text: 'Incoming Whatsapp',
+            active: true,
+          },
+        ],
+      },
+    },
+    {
       path: '/faq',
       name: 'faq',
       component: () => import('@/views/faq.vue'),

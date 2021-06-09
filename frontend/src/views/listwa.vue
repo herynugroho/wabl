@@ -3,8 +3,8 @@
         <!-- <b-button @click="blast_pesan()"/> -->
         <b-card>
             <vue-good-table
-                :columns="pesan_columns"
-                :rows="pesan_rows"
+                :columns="listwa_columns"
+                :rows="listwa_rows"
                 :line-numbers="true"
                 
                 :pagination-options="{
@@ -19,39 +19,21 @@
 
                     <template slot="table-row" slot-scope="props">
                         <span v-if="props.column.field == 'phone'">
-                            {{props.row.phone}}
+                            <span>{{props.row.phone}}  </span>
+                            <feather-icon icon="MailIcon" class="text-info" v-bind:badge="props.row.unread" badge-classes="badge-info"/>
+                        </span>
+                        <span v-if="props.column.field == 'waktu'">
+                            {{props.row.waktu}}
                         </span>
 
-                        
-                        <span v-else-if="props.column.field == 'message'">
-                            <span v-if="props.row.message==null">-</span>
-                            <span v-else>{{props.row.message}}</span>
-                        </span>
-
-                        <span v-else-if="props.column.field == 'url'">
-                            <span v-if="props.row.url == null">-</span>
-                            <span v-else><b-badge variant="primary" v-b-modal.modal_file @click="gambar(props.row.url)"><feather-icon icon="EyeIcon"/> Lihat</b-badge></span>
-                        </span>
-
-                        <span v-else-if="props.column.field == 'to_timestamp'">
-                            {{props.row.to_timestamp}}
-                        </span>
-
-                        <span v-else-if="props.column.field == 'reply'">
-                            {{props.row.reply}}
-                        </span>
-
-                        <span v-else-if="props.column.field == 'reply_by'">
-                            {{props.row.reply_by}}
-                        </span>
-
-                        <span v-else-if="props.column.field == 'status'">
-                            <span v-if="props.row.status == null"><b-badge variant="danger">Belum Balas</b-badge></span>
-                            <span v-else-if="props.row.status == 0"><b-badge variant="info">Terbalas</b-badge></span>
-                            <span v-else-if="props.row.status == 1"><b-badge variant="success">Selesai</b-badge></span>
-                        </span>
                         <span v-else-if="props.column.field == 'aksi'">
-                            <b-dropdown
+                            <b-button pill variant="primary" type="submit" v-b-modal.lihat_pesan>
+                                <feather-icon
+                                        icon="EyeIcon"
+                                        class="mr-1"
+                                    />Lihat
+                            </b-button>
+                            <!-- <b-dropdown
                                 variant="flat-secondary"                            
                                 >
                                 <template #button-content>
@@ -79,7 +61,7 @@
                                             class="mr-1"
                                         />Selesai
                                 </b-dropdown-item>
-                            </b-dropdown>
+                            </b-dropdown> -->
                         </span>
 
                     </template>
@@ -95,7 +77,7 @@
                             </span>
                             <b-form-select
                             v-model="pageLength"
-                            :options="['10','20', '50' ]"
+                            :options="['10','20', '50', '100' ]"
                             class="mx-1"
                             @input="(value)=>props.perPageChanged({currentPerPage:value})"
                             />
@@ -146,20 +128,67 @@
                 </b-button>
         </b-modal>
 
-        <b-modal id="lihat_pesan" centered hide-footer>
+        <b-modal id="lihat_pesan" centered hide-footer size="l">
             <b-card title="Balas Pesan">
-                <b-form-group>
-                    <b-form-textarea v-model="pesan" class="mb-1" rows="10"/>
+                <vue-perfect-scrollbar
+                    class="user-chats scroll-area"
+                >
+                    <div class="chats">
+                        <div
+
+                        class="chat"
+                        
+                        >
+                        <div class="chat-avatar">
+                            <b-avatar
+                            size="36"
+                            class="avatar-border-2 box-shadow-1"
+                            variant="transparent"
+                            />
+                        </div>
+                        <div class="chat-body">
+                            <!-- <div
+                            v-for="msgData in msgGrp.messages"
+                            :key="msgData.time"
+                            class="chat-content"
+                            >
+                            <p>{{ msgData.msg }}</p>
+                            </div> -->
+                        </div>
+                        </div>
+                    </div>
+
+                </vue-perfect-scrollbar>
+                <!-- @submit.prevent="sendMessage" -->
+                <b-form
+                    class="chat-app-form"
+                    
+                    >
+                    <!-- v-model="chatInputMessage" -->
+                    <b-input-group class="input-group-merge form-send-message mr-1">
+                        <b-form-input
+                        
+                        placeholder="Enter your message"
+                        />
+                    </b-input-group>
+                    <b-button
+                        variant="primary"
+                        type="submit"
+                    >
+                        Send
+                    </b-button>
+                </b-form>
+                <!-- <b-form-group>
+                    <b-form-textarea v-model="pesan" class="mb-1"/>
                     <b-form-group label="Kirim Gambar" label-cols-md="4">
                         <b-form-file v-model="gambar" accept=".jpg"></b-form-file>
                     </b-form-group>
                 
-                    <b-button @click="kirim_pesan()" variant="success" class="my-1">
+                    <b-button pill @click="kirim_pesan()" variant="primary" class="my-1">
                         <feather-icon
-                            icon="SendIcon"
-                            class="mr-50"/>Balas
+                            icon="SendIcon"/>
                     </b-button>
-                </b-form-group>
+                </b-form-group> -->
             </b-card>
         </b-modal>
     </b-card>
@@ -167,9 +196,10 @@
 
 <script>
 
-import {BFormFile, BImg, BDropdownDivider, BDropdownItem, BCardText, BDropdownForm, BOverlay, BTable, BButton, BModal, BTab, BTabs, BCard,BFormGroup, BFormInput,BDropdown, BFormSpinbutton, BAlert,BFormSelect, BPagination, BTooltip,BBadge,BFormTextarea,BDropdownGroup} from 'bootstrap-vue'
+import {BInputGroup, BForm, BAvatar, BFormFile, BImg, BDropdownDivider, BDropdownItem, BCardText, BDropdownForm, BOverlay, BTable, BButton, BModal, BTab, BTabs, BCard,BFormGroup, BFormInput,BDropdown, BFormSpinbutton, BAlert,BFormSelect, BPagination, BTooltip,BBadge,BFormTextarea,BDropdownGroup} from 'bootstrap-vue'
 
 import {VueGoodTable} from 'vue-good-table'
+import VuePerfectScrollbar from 'vue-perfect-scrollbar'
 import {VMoney} from 'v-money'
 import BCardCode from '../@core/components/b-card-code/BCardCode.vue'
 import axios from 'axios'
@@ -184,6 +214,9 @@ import '../@core/assets/css/pulse.css'
 
 export default {
     components:{
+        BAvatar,
+        BInputGroup,
+        BForm,
         BFormFile,
         BImg,
         BDropdownDivider,
@@ -212,6 +245,7 @@ export default {
         ModelSelect,
         BTooltip,
         BCardText,
+        VuePerfectScrollbar
     },
 
     methods:{
@@ -227,7 +261,7 @@ export default {
                             },
                         });
                         this.$bvModal.hide('modal_konfirmasi_selesai');
-                        this.listSekolahNegeri();
+                        this.listwa();
                 })
         },
 
@@ -254,9 +288,9 @@ export default {
                             },
                         });
                         this.$bvModal.hide('lihat_pesan');
-                        this.listSekolahNegeri();
+                        this.listwa();
                     }
-                    this.listSekolahNegeri();
+                    this.listwa();
                 })
         },
         blast_pesan(){
@@ -274,10 +308,10 @@ export default {
             this.filenya = url
         },
         
-        listSekolahNegeri(){
-            axios.post('/api/getwa', {user:this.userData.user_id})
+        listwa(){
+            axios.post('/api/listwa', {user: this.userData.user_id})
                 .then(response=>{
-                    this.pesan_rows = response.data.wa_message;
+                    this.listwa_rows = response.data.list_wa;
                 })
         },
     },
@@ -287,7 +321,7 @@ export default {
     },
 
     created(){
-        this.listSekolahNegeri()
+        this.listwa()
     },
 
     data(){
@@ -326,56 +360,33 @@ export default {
                 }
             ],
 
-            pesan_columns: [
+            listwa_columns: [
                 {
                     label: 'Pengirim',
                     field: 'phone',
                 },
                 {
-                    label: 'Pesan',
-                    field: 'message',
-                },
-                {
-                    label: 'Gambar',
-                    field: 'url',
+                    label: 'Waktu Masuk Pesan Terakhir',
+                    field: 'waktu',
                     thClass: 'text-center',
                     tdClass: 'text-center'
                 },
                 {
-                    label: 'status',
-                    field: 'status',
-                    thClass: 'text-center',
-                    tdClass: 'text-center'
-                },
-                {
-                    label: 'Waktu Masuk',
-                    field: 'to_timestamp',
-                    thClass: 'text-center',
-                    tdClass: 'text-center'
-                },
-                
-                {
-                    label: 'Penjawab',
-                    field: 'reply_by',
-                    thClass: 'text-center',
-                    tdClass: 'text-center'
-                },
-                
-                {
-                    label: 'Jawaban',
-                    field: 'reply',
-                    thClass: 'text-center',
-                    tdClass: 'text-center'
-                },
-                {
-                    label: 'Menu',
+                    label: 'Aksi',
                     field: 'aksi',
+                    thClass: 'text-center',
+                    tdClass: 'text-center'
                 },
             ],
-            pesan_rows: [],
+            listwa_rows: [],
 
         }
     }
 
 }
 </script>
+
+<style lang="scss">
+@import "~@core/scss/base/pages/app-chat.scss";
+@import "~@core/scss/base/pages/app-chat-list.scss";
+</style>
