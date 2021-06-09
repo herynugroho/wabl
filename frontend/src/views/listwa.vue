@@ -128,58 +128,32 @@
                 </b-button>
         </b-modal>
 
-        <b-modal id="lihat_pesan" centered hide-footer size="l">
-            <b-card title="Balas Pesan">
-                <vue-perfect-scrollbar
-                    class="user-chats scroll-area"
-                >
-                    <div class="chats">
-                        <div
-
-                        class="chat"
-                        
-                        >
-                        <div class="chat-avatar">
-                            <b-avatar
-                            size="36"
-                            class="avatar-border-2 box-shadow-1"
-                            variant="transparent"
-                            />
-                        </div>
-                        <div class="chat-body">
-                            <!-- <div
-                            v-for="msgData in msgGrp.messages"
-                            :key="msgData.time"
-                            class="chat-content"
-                            >
-                            <p>{{ msgData.msg }}</p>
-                            </div> -->
-                        </div>
-                        </div>
-                    </div>
-
+        <b-modal id="lihat_pesan" centered hide-footer size="xl">
+            <b-card title="Pesan">
+                <vue-perfect-scrollbar>
+                    <vue-good-table
+                        :columns="message_columns"
+                        :rows="message_rows"
+                        max-height="400px"
+                        :fixed-header="true"
+                        styleClass="vgt-table"
+                        theme="polar-bear"
+                    >
+                        <template slot="table-row" slot-scope="props">
+                            <span v-if="props.column.field == 'message'">
+                                <b-button pill class="text-left" variant="success">{{props.row.message}}</b-button>
+                                <br/>{{props.row.waktu}}
+                            </span>
+                            <span v-if="props.column.field == 'reply'&&props.row.reply != null">
+                                <b-button pill class="text-left" variant="secondary">{{props.row.reply}}</b-button>
+                                <br/>{{props.row.waktu}}
+                            </span>
+                        </template>
+                    </vue-good-table>
                 </vue-perfect-scrollbar>
-                <!-- @submit.prevent="sendMessage" -->
-                <b-form
-                    class="chat-app-form"
-                    
-                    >
-                    <!-- v-model="chatInputMessage" -->
-                    <b-input-group class="input-group-merge form-send-message mr-1">
-                        <b-form-input
-                        
-                        placeholder="Enter your message"
-                        />
-                    </b-input-group>
-                    <b-button
-                        variant="primary"
-                        type="submit"
-                    >
-                        Send
-                    </b-button>
-                </b-form>
-                <!-- <b-form-group>
-                    <b-form-textarea v-model="pesan" class="mb-1"/>
+                
+                <b-form-group class="my-1">
+                    <b-form-textarea placeholder="Ketik Pesan ..." v-model="pesan" class="mb-1"/>
                     <b-form-group label="Kirim Gambar" label-cols-md="4">
                         <b-form-file v-model="gambar" accept=".jpg"></b-form-file>
                     </b-form-group>
@@ -188,7 +162,7 @@
                         <feather-icon
                             icon="SendIcon"/>
                     </b-button>
-                </b-form-group> -->
+                </b-form-group>
             </b-card>
         </b-modal>
     </b-card>
@@ -314,6 +288,13 @@ export default {
                     this.listwa_rows = response.data.list_wa;
                 })
         },
+
+        listchat(){
+            axios.post('/api/getchat', {phone: '6282335162038'})
+                .then(response=>{
+                    this.message_rows = response.data.chat;
+                })
+        },
     },
 
     computed:{
@@ -321,7 +302,8 @@ export default {
     },
 
     created(){
-        this.listwa()
+        this.listwa();
+        this.listchat();
     },
 
     data(){
@@ -379,6 +361,21 @@ export default {
                 },
             ],
             listwa_rows: [],
+
+            message_columns:[
+                {
+                    label: 'Pesan Masuk',
+                    field: 'message',
+                    width: '100px',
+                },
+                {
+                    label: 'Balasan',
+                    field: 'reply',
+                    width: '100px',
+                }
+            ],
+
+            message_rows:[]
 
         }
     }

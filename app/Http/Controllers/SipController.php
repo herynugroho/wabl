@@ -217,11 +217,17 @@ class SipController extends Controller
             }else if($user=='199105012015012001'||$user=='198509172009021001'){
                 $mod = 'IN (0,1,2,3,4,5,6,7,8,9)';
             }
+
+            if($user=='3578193110890002'){
+                $sort = 'ASC';
+            }else{
+                $sort = 'DESC';
+            }
             
             $wa_message = DB::select(DB::raw("SELECT wa.id_wa, wa.phone, wa.message, wa.url, TO_TIMESTAMP(wa.timestamp), wa.status, wa.reply, wa.reply_by
             FROM PUBLIC.wa AS wa
             WHERE MOD(CAST(RIGHT(wa.phone,5) AS INTEGER),9) $mod
-            ORDER BY wa.status DESC, TIMESTAMP DESC"));
+            ORDER BY wa.status DESC, TIMESTAMP $sort"));
             
             if($wa_message){
                 $message = "success";
@@ -232,7 +238,7 @@ class SipController extends Controller
 
     public function updatewa(Request $request){
         $wa_stat = DB::select(DB::raw("UPDATE PUBLIC.wa
-        SET status = 0, reply_by = '$request->nama', reply = '$request->pesan'
+        SET status = 0, reply_by = '$request->nama', reply = '$request->pesan', reply_time = current_timestamp
         WHERE phone = '$request->phone' and id_wa=$request->id"));
     }
 
@@ -289,9 +295,11 @@ Salam Hormat,
     }
 
     public function getchat(Request $request){
-        $chat = DB::select(DB::raw("SELECT phone as senderId, message, TO_TIMESTAMP(TIMESTAMP) as time
+        $chat = DB::select(DB::raw("SELECT message, TO_TIMESTAMP(TIMESTAMP) AS waktu, reply, reply_time , id_wa
         FROM PUBLIC.wa
-        WHERE phone = '$request->phone'"));
+        WHERE phone = '$request->phone'
+        ORDER BY timestamp ASC")
+        );
 
         if($chat){
             $message = "success";
