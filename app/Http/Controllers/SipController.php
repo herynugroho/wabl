@@ -237,9 +237,19 @@ class SipController extends Controller
     }
 
     public function updatewa(Request $request){
-        $wa_stat = DB::select(DB::raw("UPDATE PUBLIC.wa
-        SET status = 0, reply_by = '$request->nama', reply = '$request->pesan', reply_time = current_timestamp
-        WHERE phone = '$request->phone'"));
+        $baru = $request->reply . "\r\n" . $request->pesan;
+
+        // return response()->json(compact('baru'), 200);
+
+        if($request->reply == null){
+            $wa_stat = DB::select(DB::raw("UPDATE PUBLIC.wa
+            SET status = 0, reply_by = '$request->nama', reply = '$request->pesan', reply_time = current_timestamp
+            WHERE phone = '$request->phone' AND id_wa = $request->id"));
+        }else{
+            $wa_stat = DB::select(DB::raw("UPDATE PUBLIC.wa
+            SET status = 0, reply_by = '$request->nama', reply = '$baru', reply_time = current_timestamp
+            WHERE phone = '$request->phone' AND id_wa = $request->id"));
+        }
     }
 
     public function waselesai(Request $request){
@@ -295,7 +305,7 @@ Salam Hormat,
     }
 
     public function getchat(Request $request){
-        $chat = DB::select(DB::raw("SELECT message, TO_TIMESTAMP(TIMESTAMP) AS waktu, reply, reply_time , id_wa
+        $chat = DB::select(DB::raw("SELECT message, TO_TIMESTAMP(TIMESTAMP) AS waktu, reply, reply_time , id_wa, url
         FROM PUBLIC.wa
         WHERE phone = '$request->phone'
         ORDER BY timestamp ASC")
@@ -330,9 +340,9 @@ Salam Hormat,
             }
 
         $list_wa = DB::select(DB::raw("SELECT * 
-        FROM (SELECT DISTINCT ON (phone) phone, (case when message IS NULL THEN url WHEN message IS NOT NULL THEN message END) as last_message, TO_TIMESTAMP(TIMESTAMP) AS waktu, status, COUNT(CASE WHEN status IS NULL THEN 1 END) AS unread
+        FROM (SELECT DISTINCT ON (phone) phone, message, TO_TIMESTAMP(TIMESTAMP) AS waktu, status, COUNT(CASE WHEN status IS NULL THEN 1 END) AS unread, id_wa, url, reply
         FROM PUBLIC.wa
-        GROUP BY phone, message, TIMESTAMP, status, url
+        GROUP BY phone, message, TIMESTAMP, status, url, id_wa, reply
         ORDER BY phone, TIMESTAMP DESC nulls LAST, status DESC nulls LAST) C
         WHERE MOD(CAST(RIGHT(C.phone,5) AS INTEGER),9) $mod
         ORDER BY c.waktu desc"));

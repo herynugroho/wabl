@@ -27,7 +27,7 @@
                         </span>
 
                         <span v-else-if="props.column.field == 'aksi'">
-                            <b-button pill variant="primary" type="submit" v-b-modal.lihat_pesan @click="listchat(props.row.phone);pengirim(props.row.phone, props.row.id_wa);">
+                            <b-button pill variant="primary" type="submit" v-b-modal.lihat_pesan @click="listchat(props.row.phone);pengirim(props.row.phone, props.row.id_wa, props.row.reply);">
                                 <feather-icon
                                         icon="EyeIcon"
                                         class="mr-1"
@@ -112,7 +112,11 @@
                     >
                         <template slot="table-row" slot-scope="props">
                             <span v-if="props.column.field == 'message'">
-                                <b-button rounded-circle class="text-left" variant="success">{{props.row.message}}</b-button>
+                                <b-button v-if="props.row.message != null" rounded-circle class="text-left" variant="success">{{props.row.message}}</b-button>
+                                <span v-else-if="props.row.url != null" >
+                                    <b-img :src="props.row.url" fluid/>
+                                    <b-badge pill variant="info"><a :href="props.row.url" target="_blank">Lihat Gambar</a></b-badge>
+                                </span>
                                 <br/><b-badge variant="light-dark">{{props.row.waktu}}</b-badge>
                             </span>
                             <span v-if="props.column.field == 'reply'&&props.row.reply != null">
@@ -210,9 +214,10 @@ export default {
                 })
         },
 
-        pengirim(phone, id){
+        pengirim(phone, id, reply){
             this.phone = phone,
-            this.id_wa = id
+            this.id_wa = id,
+            this.reply = reply
         },
         kirim_pesan(){
             const instanceAxios = axios.create({
@@ -223,7 +228,7 @@ export default {
                 .then(response=>{
                     const respon = response.data.message;
                     if(respon == 'successfully sent text'){
-                        axios.post('/api/updatewa', {phone: this.phone, nama: this.userData.username, pesan: this.pesan, id: this.id_wa})
+                        axios.post('/api/updatewa', {phone: this.phone, nama: this.userData.username, pesan: this.pesan, id: this.id_wa, reply:this.reply})
                         this.$toast({
                             component: ToastificationContent,
                             props: {
@@ -233,11 +238,13 @@ export default {
                             },
                         });
                         this.$bvModal.hide('lihat_pesan');
+                        this.pesan = '';
                         this.listwa();
-                        this.listchat();
+                        this.listchat(this.phone);
+                        this.$bvModal.show('lihat_pesan');
                     }
                     this.listwa();
-                    this.listchat();
+                    this.listchat(this.phone);
                 })
         },
         blast_pesan(){
@@ -286,6 +293,7 @@ export default {
             filenya: '',
             pesan: '',
             tujuan: '',
+            reply: '',
             overlay: false,
             pageLength: '10',
             userData: JSON.parse(localStorage.getItem('userData')),
