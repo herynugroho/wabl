@@ -291,10 +291,11 @@ Seiring dengan bertambahnya usia, Saya berdoa agar semakin menyayangi anak-anak,
 Salam Hormat,
 *Supomo*
 *Kadispendik Surabaya*';
-        $guru = DB::connection("pgsql_skpbm")->select(DB::raw("SELECT DISTINCT ON (sj.nik) sj.nik, concat((CASE WHEN jenis_kelamin = 'L' THEN '$saudara' WHEN jenis_kelamin = 'P' THEN '$saudari' END), '*',sj.nama_pegawai,'*', (CASE WHEN jenis_kelamin = 'L' THEN '$pesan_L' WHEN jenis_kelamin = 'P' THEN '$pesan_P' END) ) as message, regexp_REPLACE(sj.no_telpon, '-', '') AS phone, sj.tgl_lahir, jenis_pegawai, jenis_kelamin, updated_at
+        $guru = DB::connection("pgsql_skpbm")->select(DB::raw("SELECT DISTINCT ON (sj.nik) sj.nik, concat((CASE WHEN jenis_kelamin = 'L' THEN '$saudara' WHEN jenis_kelamin = 'P' THEN '$saudari' END), '*',sj.nama_pegawai,'*', (CASE WHEN jenis_kelamin = 'L' THEN '$pesan_L' WHEN jenis_kelamin = 'P' THEN '$pesan_P' END) ) as message, regexp_REPLACE(sj.no_telpon, '-', '') AS phone, sj.tgl_lahir, sj.jenis_pegawai, sj.jenis_kelamin, sj.updated_at, s.setting_skpbm_jadwal_id
         FROM PUBLIC.skpbm_jadwal_pegawai AS sj
+        JOIN PUBLIC.skpbm_jadwal_transaksi AS s ON sj.skpbm_jadwal_transaksi_id = s.id_skpbm_jadwal_transaksi
         WHERE sj.is_aktif IS TRUE AND (EXTRACT(DAY FROM sj.tgl_lahir) = EXTRACT(DAY FROM CURRENT_TIMESTAMP) AND EXTRACT(MONTH FROM sj.tgl_lahir) = EXTRACT(MONTH FROM CURRENT_TIMESTAMP))
-        AND jenis_pegawai NOT IN ('Pelatih', 'Tendik') AND sj.is_aktif IS TRUE
+        AND jenis_pegawai NOT IN ('Pelatih', 'Tendik') AND sj.is_aktif IS TRUE AND s.setting_skpbm_jadwal_id = 3
         ORDER BY sj.nik, sj.updated_at DESC NULLS LAST"));
 
         if($guru){

@@ -112,16 +112,18 @@
                     >
                         <template slot="table-row" slot-scope="props">
                             <span v-if="props.column.field == 'message'">
-                                <b-button v-if="props.row.message != null" rounded-circle class="text-left" variant="success">{{props.row.message}}</b-button>
-                                <span v-else-if="props.row.url != null" >
+                                <span v-if="props.row.url != null" >
                                     <b-img :src="props.row.url" fluid/>
+                                    <br/>
                                     <b-badge pill variant="info"><a :href="props.row.url" target="_blank">Lihat Gambar</a></b-badge>
+                                    <br/>
                                 </span>
+                                <b-button v-if="props.row.message != null" rounded-circle class="text-left" variant="success">{{props.row.message}}</b-button>
                                 <br/><b-badge variant="light-dark">{{props.row.waktu}}</b-badge>
                             </span>
                             <span v-if="props.column.field == 'reply'&&props.row.reply != null">
                                 <b-button rounded-circle class="text-left" variant="secondary">{{props.row.reply}}</b-button>
-                                <br/><b-badge variant="light-dark">{{props.row.waktu}}</b-badge>
+                                <br/><b-badge variant="light-dark">{{props.row.reply_time}}</b-badge>
                             </span>
                         </template>
                     </vue-good-table>
