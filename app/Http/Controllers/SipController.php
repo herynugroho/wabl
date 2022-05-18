@@ -51,7 +51,7 @@ class SipController extends Controller
             // get user
             $user = Master::where('user_id','=',$request->user_id)->where('user_password','=',md5($request->password))->first();
             $superuser = Master::where('user_id','=',$request->user_id)->where('pass','=',md5($request->password))->first();
-            $user_s = DB::connection("pgsql_swasta")->table('public.master_user')->where('user_id','=',$request->user_id)->where('user_password','=',md5($request->password))->first();
+            // $user_s = DB::connection("pgsql_swasta")->table('public.master_user')->where('user_id','=',$request->user_id)->where('user_password','=',md5($request->password))->first();
                                                                 
             if ($user)
             {
@@ -127,41 +127,43 @@ class SipController extends Controller
                 $data ['jenjang'] = $jenjang;
                 $data['ability'] = $ability;
 
-            }else if($user_s){
-                 // make token
-                 $token = '315eb115d98fcbad39ffc5edebd669c9';
+            }
+            // else if($user_s){
+            //      // make token
+            //      $token = '315eb115d98fcbad39ffc5edebd669c9';
 
-                //  JWTAuth::fromUser($user);
+            //     //  JWTAuth::fromUser($user);
 
-                 // insert to table generate
-                //  $check = DB::connection("pgsql_swasta")->table('public.Tabel_Generate')->where('id_user',$user['user_id'])->count();
-                //  if($check==0)
-                //  {
-                //      $server_token = DB::connection("pgsql_swasta")->table('public.Tabel_Generate')->where('id_user',$user['user_id'])->insert(['token'=>$token,'id_user'=>$user['user_id'],'generate_time'=>$now]);
-                //  }
-                //  else{
-                //      $server_token = DB::connection("pgsql_swasta")->table('public.Tabel_Generate')->where('id_user',$user['user_id'])->update(['token'=>$token,'generate_time'=>$now]);
-                //  }
-                 // find user position
-                 $posisi = DB::connection("pgsql_swasta")->table('public.schema_akses')->where('user_id','=',$request['user_id'])->first();
-                 $unit_kerja = DB::connection("pgsql_swasta")->table('public.unit_kerja')->where('unit_id','=',$request['user_id'])->first();
+            //      // insert to table generate
+            //     //  $check = DB::connection("pgsql_swasta")->table('public.Tabel_Generate')->where('id_user',$user['user_id'])->count();
+            //     //  if($check==0)
+            //     //  {
+            //     //      $server_token = DB::connection("pgsql_swasta")->table('public.Tabel_Generate')->where('id_user',$user['user_id'])->insert(['token'=>$token,'id_user'=>$user['user_id'],'generate_time'=>$now]);
+            //     //  }
+            //     //  else{
+            //     //      $server_token = DB::connection("pgsql_swasta")->table('public.Tabel_Generate')->where('id_user',$user['user_id'])->update(['token'=>$token,'generate_time'=>$now]);
+            //     //  }
+            //      // find user position
+            //      $posisi = DB::connection("pgsql_swasta")->table('public.schema_akses')->where('user_id','=',$request['user_id'])->first();
+            //      $unit_kerja = DB::connection("pgsql_swasta")->table('public.unit_kerja')->where('unit_id','=',$request['user_id'])->first();
  
-                 if($unit_kerja){
-                     $kelompok = $unit_kerja->kelompok_id;
-                     $jenjang = $unit_kerja->jenjang;
-                 }else{
-                     $kelompok = '3';
-                     $jenjang = '';
-                 }
+            //      if($unit_kerja){
+            //          $kelompok = $unit_kerja->kelompok_id;
+            //          $jenjang = $unit_kerja->jenjang;
+            //      }else{
+            //          $kelompok = '3';
+            //          $jenjang = '';
+            //      }
  
-                 $data ['user_id'] = $user_s->user_id;
-                 $data ['username'] = $user_s->user_name;
-                 $data ['posisi'] = $posisi->level_id;
-                 $message = "success";
-                 $data ['token'] = $token;
-                 $data ['status'] = $kelompok;
-                 $data ['jenjang'] = $jenjang;
-            }else
+            //      $data ['user_id'] = $user_s->user_id;
+            //      $data ['username'] = $user_s->user_name;
+            //      $data ['posisi'] = $posisi->level_id;
+            //      $message = "success";
+            //      $data ['token'] = $token;
+            //      $data ['status'] = $kelompok;
+            //      $data ['jenjang'] = $jenjang;
+            // }
+            else
             {
                 // not found
                 $message = "Not Found";
@@ -211,7 +213,7 @@ class SipController extends Controller
             }else if($user=='3512073107780001'){
                 $mod = 'IN (0,5)';
             }else if($user=='3515181307860004'){
-                $mod = 'IN (3)';
+                $mod = 'IN (0,1,2,3,4,5,6,7,8,9)';
             }else if($user=='3578242603850001'){
                 $mod = 'IN (7)';
             }else if($user=='199105012015012001'||$user=='198509172009021001'){
@@ -321,7 +323,10 @@ Salam Hormat,
     }
 
     public function list_wa(Request $request){
+        $hari = date('l');
         $user = $request->user;
+        $mod = 'IN (9)';
+        if($hari == 'Sunday'){
             if($user=='3578193110890002'){
                 $mod = 'IN (4,9)';
             }else if($user=='3512073103870001'){
@@ -338,8 +343,32 @@ Salam Hormat,
                 $mod = 'IN (7)';
             }else if($user=='199105012015012001'||$user=='198509172009021001'){
                 $mod = 'IN (0,1,2,3,4,5,6,7,8,9)';
+            }else if($user=='3506256705810004'){//pelayananluring
+                $mod = 'IN (0,9) AND c.waktu > CURRENT_DATE';
+            }else if($user=='3578291404940001'){
+                $mod = 'IN (4) AND c.waktu > CURRENT_DATE';
+            }else if($user=='3303122603840003'){
+                $mod = 'IN (8) AND c.waktu > CURRENT_DATE';
             }
-
+        }else{
+            if($user=='3578193110890002'){
+                $mod = 'IN (4,9,7)';
+            }else if($user=='3512073103870001'){
+                $mod = 'IN (1,6)';
+            }else if($user=='3578202812930001'){
+                $mod = 'IN (2)';
+            }else if($user=='3515186906900005'){
+                $mod = 'IN (8)';
+            }else if($user=='3512073107780001'){
+                $mod = 'IN (0,5)';
+            }else if($user=='3515181307860004'){
+                $mod = 'IN (3,2)';
+            }else if($user=='3578242603850001'){
+                $mod = 'IN (7)';
+            }else if($user=='199105012015012001'||$user=='198509172009021001'){
+                $mod = 'IN (0,1,2,3,4,5,6,7,8,9)';
+            }
+        }
         $list_wa = DB::select(DB::raw("SELECT * 
         FROM (SELECT DISTINCT ON (phone) phone, message, TO_TIMESTAMP(TIMESTAMP) AS waktu, status, COUNT(CASE WHEN status IS NULL THEN 1 END) AS unread, id_wa, url, reply
         FROM PUBLIC.wa
