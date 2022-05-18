@@ -118,12 +118,24 @@
                                     <b-badge pill variant="info"><a :href="props.row.url" target="_blank">Lihat Gambar</a></b-badge>
                                     <br/>
                                 </span>
-                                <b-button v-if="props.row.message != null" rounded-circle class="text-left" variant="success">{{props.row.message}}</b-button>
-                                <br/><b-badge variant="light-dark">{{props.row.waktu}}</b-badge>
+                                <!-- <b-button v-if="props.row.message != null" rounded-circle class="text-left" variant="success">{{props.row.message}}</b-button> -->
+                                <b-card bg-variant="success" text-variant="white" v-if="props.row.message != null" class="text-left my-0">
+                                    <b-card-text>{{props.row.message}}</b-card-text>
+                                </b-card>
+                                <b-badge class="mx-0" variant="light-dark">{{props.row.waktu}}</b-badge>
+                                <b-button class="mx-0" variant="flat-success" @click="update_pesan()">
+                                    <feather-icon
+                                        icon="CheckCircleIcon"
+                                    />
+                                </b-button>
                             </span>
-                            <span v-if="props.column.field == 'reply'&&props.row.reply != null">
-                                <b-button rounded-circle class="text-left" variant="secondary">{{props.row.reply}}</b-button>
-                                <br/><b-badge variant="light-dark">{{props.row.reply_time}}</b-badge>
+                            <span v-if="props.column.field == 'reply'&&props.row.reply != null&&props.row.reply != ''">
+                                <!-- <b-button rounded-circle class="text-left" variant="secondary">{{props.row.reply}}</b-button> -->
+                                <b-card bg-variant="secondary" text-variant="white" class="text-left my-0">
+                                    <b-card-text>{{props.row.reply}}</b-card-text>
+                                </b-card>
+                                <b-badge variant="light-dark">{{props.row.reply_time}}</b-badge>
+                                
                             </span>
                         </template>
                     </vue-good-table>
@@ -220,6 +232,14 @@ export default {
             this.phone = phone,
             this.id_wa = id,
             this.reply = reply
+        },
+        update_pesan(){
+            axios.post('/api/updatewa', {phone: this.phone, nama: this.userData.username, pesan: this.pesan, id: this.id_wa, reply:this.reply})
+            this.$bvModal.hide('lihat_pesan');
+                        this.pesan = '';
+                        this.listwa();
+                        this.listchat(this.phone);
+                        this.$bvModal.show('lihat_pesan');
         },
         kirim_pesan(){
             const instanceAxios = axios.create({

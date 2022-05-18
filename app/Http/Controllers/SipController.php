@@ -321,7 +321,34 @@ Salam Hormat,
     }
 
     public function list_wa(Request $request){
+        $hari = date('l');
         $user = $request->user;
+        $mod = 'IN (9)';
+        if($hari == 'Sunday'){
+            if($user=='3578193110890002'){
+                $mod = 'IN (4,9)';
+            }else if($user=='3512073103870001'){
+                $mod = 'IN (1,6)';
+            }else if($user=='3578202812930001'){
+                $mod = 'IN (2)';
+            }else if($user=='3515186906900005'){
+                $mod = 'IN (8)';
+            }else if($user=='3512073107780001'){
+                $mod = 'IN (0,5)';
+            }else if($user=='3515181307860004'){
+                $mod = 'IN (3)';
+            }else if($user=='3578242603850001'){
+                $mod = 'IN (7)';
+            }else if($user=='199105012015012001'||$user=='198509172009021001'){
+                $mod = 'IN (0,1,2,3,4,5,6,7,8,9)';
+            }else if($user=='3506256705810004'){//pelayananluring
+                $mod = 'IN (0) AND c.waktu > CURRENT_DATE';
+            }else if($user=='3578291404940001'){
+                $mod = 'IN (4) c.waktu > CURRENT_DATE';
+            }else if($user=='3303122603840003'){
+                $mod = 'IN (8) c.waktu > CURRENT_DATE';
+            }
+        }else{
             if($user=='3578193110890002'){
                 $mod = 'IN (4,9)';
             }else if($user=='3512073103870001'){
@@ -339,6 +366,7 @@ Salam Hormat,
             }else if($user=='199105012015012001'||$user=='198509172009021001'){
                 $mod = 'IN (0,1,2,3,4,5,6,7,8,9)';
             }
+        }
 
         $list_wa = DB::select(DB::raw("SELECT * 
         FROM (SELECT DISTINCT ON (phone) phone, message, TO_TIMESTAMP(TIMESTAMP) AS waktu, status, COUNT(CASE WHEN status IS NULL THEN 1 END) AS unread, id_wa, url, reply
