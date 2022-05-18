@@ -327,54 +327,55 @@ Salam Hormat,
         $user = $request->user;
         $mod = 'IN (9)';
         if($hari == 'Sunday'){
-            if($user=='3578193110890002'){
-                $mod = 'IN (4,9)';
-            }else if($user=='3512073103870001'){
-                $mod = 'IN (1,6)';
-            }else if($user=='3578202812930001'){
+            if($user=='3578202812930001'){//ACHMAD FAUZI
+                $mod = 'IN (0)';
+            }else if($user=='3578172801760002'){//BUDI NURIADI
+                $mod = 'IN (1)';
+            }else if($user=='3515186906900005'){//NILA EKA YUNIARTHA
                 $mod = 'IN (2)';
-            }else if($user=='3515186906900005'){
-                $mod = 'IN (8)';
-            }else if($user=='3512073107780001'){
-                $mod = 'IN (0,5)';
-            }else if($user=='3515181307860004'){
+            }else if($user=='3512073103870001'){//LIGA SETIYA MARYONO
                 $mod = 'IN (3)';
-            }else if($user=='3578242603850001'){
-                $mod = 'IN (7)';
-            }else if($user=='199105012015012001'||$user=='198509172009021001'){
-                $mod = 'IN (0,1,2,3,4,5,6,7,8,9)';
-            }else if($user=='3506256705810004'){//pelayananluring
-                $mod = 'IN (0,9) AND c.waktu > CURRENT_DATE';
-            }else if($user=='3578291404940001'){
-                $mod = 'IN (4) AND c.waktu > CURRENT_DATE';
-            }else if($user=='3303122603840003'){
-                $mod = 'IN (8) AND c.waktu > CURRENT_DATE';
-            }
+            }else if($user=='1111'){//SD1
+                $mod = 'IN (4)';
+            }else if($user=='2222'){//SD2
+                $mod = 'IN (5)';
+            }else if($user=='3333'){//SMP1
+                $mod = 'IN (6)';
+            }else if($user=='4444'){//SMP2
+                $mod = 'IN (7)';}
+            // }else if($user=='199105012015012001'||$user=='198509172009021001'){
+            //     $mod = 'IN (0,1,2,3,4,5,6,7,8,9)';
+            // }else if($user=='3506256705810004'){//pelayananluring
+            //     $mod = 'IN (0,9) AND c.waktu > CURRENT_DATE';
+            // }else if($user=='3578291404940001'){
+            //     $mod = 'IN (4) AND c.waktu > CURRENT_DATE';
+            // }else if($user=='3303122603840003'){
+            //     $mod = 'IN (8) AND c.waktu > CURRENT_DATE';
+            // }
         }else{
-            if($user=='3578193110890002'){
-                $mod = 'IN (4,9,7)';
-            }else if($user=='3512073103870001'){
-                $mod = 'IN (1,6)';
-            }else if($user=='3578202812930001'){
+            if($user=='3578202812930001'){//ACHMAD FAUZI
+                $mod = 'IN (0)';
+            }else if($user=='3578172801760002'){//BUDI NURIADI
+                $mod = 'IN (1)';
+            }else if($user=='3515186906900005'){//NILA EKA YUNIARTHA
                 $mod = 'IN (2)';
-            }else if($user=='3515186906900005'){
-                $mod = 'IN (8)';
-            }else if($user=='3512073107780001'){
-                $mod = 'IN (0,5)';
-            }else if($user=='3515181307860004'){
-                $mod = 'IN (3,2)';
-            }else if($user=='3578242603850001'){
-                $mod = 'IN (7)';
-            }else if($user=='199105012015012001'||$user=='198509172009021001'){
-                $mod = 'IN (0,1,2,3,4,5,6,7,8,9)';
-            }
+            }else if($user=='3512073103870001'){//LIGA SETIYA MARYONO
+                $mod = 'IN (3)';
+            }else if($user=='1111'){//SD1
+                $mod = 'IN (4)';
+            }else if($user=='2222'){//SD2
+                $mod = 'IN (5)';
+            }else if($user=='3333'){//SMP1
+                $mod = 'IN (6)';
+            }else if($user=='4444'){//SMP2
+                $mod = 'IN (7)';}
         }
         $list_wa = DB::select(DB::raw("SELECT * 
         FROM (SELECT DISTINCT ON (phone) phone, message, TO_TIMESTAMP(TIMESTAMP) AS waktu, status, COUNT(CASE WHEN status IS NULL THEN 1 END) AS unread, id_wa, url, reply
         FROM PUBLIC.wa
         GROUP BY phone, message, TIMESTAMP, status, url, id_wa, reply
         ORDER BY phone, TIMESTAMP DESC nulls LAST, status DESC nulls LAST) C
-        WHERE MOD(CAST(RIGHT(C.phone,5) AS INTEGER),9) $mod
+        WHERE MOD(CAST(RIGHT(C.phone,5) AS INTEGER),8) $mod
         ORDER BY c.waktu desc"));
 
         if($list_wa){

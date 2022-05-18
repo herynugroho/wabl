@@ -2,7 +2,7 @@ APP_NAME=Laravel
 APP_ENV=local
 APP_KEY=base64:PROEUfyFR7lx692woXq5PAsTS6qKW4kcu1+sLL4t3mo=
 APP_DEBUG=true
-APP_URL=https://sipksdispendik.surabaya.go.id/
+APP_URL=https://eofficedispendik.surabaya.go.id/
 
 LOG_CHANNEL=stack
 LOG_LEVEL=debug
