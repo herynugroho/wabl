@@ -27,12 +27,14 @@
                         </span>
 
                         <span v-else-if="props.column.field == 'aksi'">
-                            <b-button pill variant="primary" type="submit" v-b-modal.lihat_pesan @click="listchat(props.row.phone);pengirim(props.row.phone, props.row.id_wa, props.row.reply);">
-                                <feather-icon
-                                        icon="EyeIcon"
-                                        class="mr-1"
-                                    />Lihat
-                            </b-button>
+                            <div class="my-buttons">
+                                <b-button pill variant="primary" type="submit" v-b-modal.lihat_pesan @click="listchat(props.row.phone);pengirim(props.row.phone, props.row.id_wa, props.row.reply);">
+                                    <feather-icon
+                                            icon="EyeIcon"
+                                            class="mr-1"
+                                        />Lihat
+                                </b-button>
+                            </div>
                         </span>
 
                     </template>
@@ -390,4 +392,10 @@ export default {
 <style lang="scss">
 @import "~@core/scss/base/pages/app-chat.scss";
 @import "~@core/scss/base/pages/app-chat-list.scss";
+</style>
+
+<style>
+    .my-buttons .active {
+    background: rgb(18, 0, 41) !important;
+}
 </style>
