@@ -124,7 +124,7 @@
                                 <b-card bg-variant="success" text-variant="white" v-if="props.row.message != null" class="text-left my-0">
                                     <b-card-text>{{props.row.message}}</b-card-text>
                                 </b-card>
-                                <b-badge variant="light-dark">{{props.row.waktu}}</b-badge>
+                                <b-badge class="mx-0" variant="light-dark">{{props.row.waktu}}</b-badge>
                                 <b-button class="mx-0" variant="flat-success" @click="update_pesan()">
                                     <feather-icon
                                         icon="CheckCircleIcon"
@@ -137,6 +137,7 @@
                                     <b-card-text>{{props.row.reply}}</b-card-text>
                                 </b-card>
                                 <b-badge variant="light-dark">{{props.row.reply_time}}</b-badge>
+                                
                             </span>
                         </template>
                     </vue-good-table>
