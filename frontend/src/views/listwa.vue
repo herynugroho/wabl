@@ -245,10 +245,10 @@ export default {
         },
         kirim_pesan(){
             const instanceAxios = axios.create({
-                headers: {'Authorization': 'wxDQ6XHfiFQPrErRP6cUjucsA73dTJUDeg2O6uPDKZBB2qAX1p6sl9ScE9Y8T1IS'}
+                headers: {'Authorization': 'Bl1uHWXPRTdX99O1G9x6S2q6nM0ZDingi0ANGdsi78rkKZQIjYnpyHK4X01W9lhO'}
             })
             
-            instanceAxios.post('https://cepogo.wablas.com/api/send-message', {phone: this.phone, message: this.pesan})
+            instanceAxios.post('https://pati.wablas.com/api/send-message', {phone: this.phone, message: this.pesan})
                 .then(response=>{
                     const respon = response.data.message;
                     if(respon == 'successfully sent text'){

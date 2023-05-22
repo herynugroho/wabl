@@ -182,15 +182,21 @@ class SipController extends Controller
             $id = $request->id;
             $phone = $request->phone;
             $message = $request->message;
-            $url = $request->url;
+            $urlfile = $request->file;
             $timestamp = $request->timestamp;
+            $url = $request->url;
+            $name = $request->pushName;
+            $sender = $request->sender;
         
             $insert = DB::table('public.wa')->insert([
                 'message_id' => $id,
                 'phone' => $phone,
                 'message' => $message,
+                'urlfile' => $urlfile,
+                'timestamp' => $timestamp,
                 'url' => $url,
-                'timestamp' => $timestamp
+                'name' => $name,
+                'sender' => $sender
             ]);
             
             if($insert){
@@ -308,7 +314,7 @@ Salam Hormat,
     }
 
     public function getchat(Request $request){
-        $chat = DB::select(DB::raw("SELECT message, TO_TIMESTAMP(TIMESTAMP) AS waktu, reply, reply_time , id_wa, url
+        $chat = DB::select(DB::raw("SELECT message, TIMESTAMP AT TIME ZONE 'UTC' AS waktu, reply, reply_time , id_wa, url
         FROM PUBLIC.wa
         WHERE phone = '$request->phone'
         ORDER BY timestamp ASC")
@@ -354,13 +360,13 @@ Salam Hormat,
             // }
         }else{
             if($user=='3578202812930001'){//ACHMAD FAUZI
-                $mod = 'IN (0)';
+                $mod = 'IN (0,4)';
             }else if($user=='3578172801760002'){//BUDI NURIADI
-                $mod = 'IN (1)';
+                $mod = 'IN (1,5)';
             }else if($user=='3515186906900005'){//NILA EKA YUNIARTHA
-                $mod = 'IN (2)';
+                $mod = 'IN (2,6)';
             }else if($user=='3512073103870001'){//LIGA SETIYA MARYONO
-                $mod = 'IN (3)';
+                $mod = 'IN (3,7)';
             }else if($user=='1111'){//SD1
                 $mod = 'IN (4)';
             }else if($user=='2222'){//SD2
@@ -371,7 +377,7 @@ Salam Hormat,
                 $mod = 'IN (7)';}
         }
         $list_wa = DB::select(DB::raw("SELECT * 
-        FROM (SELECT DISTINCT ON (phone) phone, message, TO_TIMESTAMP(TIMESTAMP) AS waktu, status, COUNT(CASE WHEN status IS NULL THEN 1 END) AS unread, id_wa, url, reply
+        FROM (SELECT DISTINCT ON (phone) phone, message, TIMESTAMP AT TIME ZONE 'UTC' AS waktu, status, COUNT(CASE WHEN status IS NULL THEN 1 END) AS unread, id_wa, url, reply
         FROM PUBLIC.wa
         GROUP BY phone, message, TIMESTAMP, status, url, id_wa, reply
         ORDER BY phone, TIMESTAMP DESC nulls LAST, status DESC nulls LAST) C
