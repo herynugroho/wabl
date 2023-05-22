@@ -11,25 +11,25 @@ export default [
     resource: 'ACL',
     children: [
       {
-        title: 'WhatsApp Masuk',
-        route: 'daftar_pesan',
-        action: 'read', 
-        resource: 'ACL',
+        title: 'Incoming Whatsapp',
+        route: 'listwa',
       },
+      // {
+      //   title: 'WhatsApp Masuk',
+      //   route: 'daftar_pesan',
+      //   action: 'read', 
+      //   resource: 'ACL',
+      // },
       {
         title: 'F.A.Q',
         route: 'faq',
         action: 'read', 
         resource: 'ACL',
       },
-      {
-        title: 'Chat',
-        route: 'chat',
-      },
-      {
-        title: 'Incoming Whatsapp',
-        route: 'listwa',
-      },
+      // {
+      //   title: 'Chat',
+      //   route: 'chat',
+      // },
     ]
   }
 ]

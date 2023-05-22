@@ -245,8 +245,7 @@ class SipController extends Controller
     }
 
     public function updatewa(Request $request){
-        $baru = $request->reply . "\r\n" . $request->pesan;
-
+        $baru = $request->reply . "\n \n" . $request->pesan;
         // return response()->json(compact('baru'), 200);
 
         if($request->reply == null){
@@ -349,9 +348,10 @@ Salam Hormat,
                 $mod = 'IN (6)';
             }else if($user=='4444'){//SMP2
                 $mod = 'IN (7)';}
-            // }else if($user=='199105012015012001'||$user=='198509172009021001'){
-            //     $mod = 'IN (0,1,2,3,4,5,6,7,8,9)';
-            // }else if($user=='3506256705810004'){//pelayananluring
+            }else if($user=='199105012015012001'||$user=='198509172009021001'){
+                $mod = 'IN (0,1,2,3,4,5,6,7,8,9)';
+            }
+            else if($user=='3506256705810004'){//pelayananluring
             //     $mod = 'IN (0,9) AND c.waktu > CURRENT_DATE';
             // }else if($user=='3578291404940001'){
             //     $mod = 'IN (4) AND c.waktu > CURRENT_DATE';
@@ -374,14 +374,18 @@ Salam Hormat,
             }else if($user=='3333'){//SMP1
                 $mod = 'IN (6)';
             }else if($user=='4444'){//SMP2
-                $mod = 'IN (7)';}
+                $mod = 'IN (7)';
+            }else if($user=='199105012015012001'||$user=='198509172009021001'){
+                $mod = 'IN (0,1,2,3,4,5,6,7,8,9)';
+            }
         }
         $list_wa = DB::select(DB::raw("SELECT * 
         FROM (SELECT DISTINCT ON (phone) phone, message, TIMESTAMP AT TIME ZONE 'UTC' AS waktu, status, COUNT(CASE WHEN status IS NULL THEN 1 END) AS unread, id_wa, url, reply
         FROM PUBLIC.wa
+        where timestamp is not null
         GROUP BY phone, message, TIMESTAMP, status, url, id_wa, reply
         ORDER BY phone, TIMESTAMP DESC nulls LAST, status DESC nulls LAST) C
-        WHERE MOD(CAST(RIGHT(C.phone,5) AS INTEGER),8) $mod
+        WHERE MOD(CAST(RIGHT(C.phone,5) AS INTEGER),8) $mod 
         ORDER BY c.waktu desc"));
 
         if($list_wa){

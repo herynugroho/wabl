@@ -20,7 +20,8 @@
                     <template slot="table-row" slot-scope="props">
                         <span v-if="props.column.field == 'phone'">
                             <span>{{props.row.phone}}  </span>
-                            <feather-icon icon="MailIcon" class="text-info" v-bind:badge="props.row.unread" badge-classes="badge-info"/>
+                            <feather-icon icon="MailIcon" class="text-info" v-if="props.row.unread>=1" :badge="' '" badge-classes="badge-danger"/>
+                            <feather-icon icon="MailIcon" class="text-info" v-if="props.row.unread <1"/>
                         </span>
                         <span v-if="props.column.field == 'waktu'">
                             {{props.row.waktu}}
@@ -151,7 +152,7 @@
                 
                     <b-button pill @click="kirim_pesan()" variant="primary" class="my-1">
                         <feather-icon
-                            icon="SendIcon"/>
+                            icon="SendIcon"/> Kirim
                     </b-button>
                 </b-form-group>
             </b-card>
@@ -245,13 +246,13 @@ export default {
         },
         kirim_pesan(){
             const instanceAxios = axios.create({
-                headers: {'Authorization': 'Bl1uHWXPRTdX99O1G9x6S2q6nM0ZDingi0ANGdsi78rkKZQIjYnpyHK4X01W9lhO'}
+                headers: {'Authorization': 'cmCzgqymwrXvENAKp2q8M6vBLkcIQcdLM2WJ3PiGQK3Gl3o8s36qFy2Yh1ZWRM8D'}
             })
             
-            instanceAxios.post('https://pati.wablas.com/api/send-message', {phone: this.phone, message: this.pesan})
+            instanceAxios.post('https://jogja.wablas.com/api/send-message', {phone: this.phone, message: this.pesan})
                 .then(response=>{
-                    const respon = response.data.message;
-                    if(respon == 'successfully sent text'){
+                    const respon = response.data.status;
+                    if(respon == true){
                         axios.post('/api/updatewa', {phone: this.phone, nama: this.userData.username, pesan: this.pesan, id: this.id_wa, reply:this.reply})
                         this.$toast({
                             component: ToastificationContent,
@@ -270,6 +271,8 @@ export default {
                     this.listwa();
                     this.listchat(this.phone);
                 })
+                this.listwa();
+                this.listchat(this.phone);
         },
         blast_pesan(){
             const iAxios = axios.create({
