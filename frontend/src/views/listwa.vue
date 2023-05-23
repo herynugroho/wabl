@@ -147,7 +147,7 @@
                 <b-form-group class="my-1">
                     <b-form-textarea placeholder="Ketik Pesan ..." v-model="pesan" class="mb-1"/>
                     <b-form-group label="Kirim Gambar" label-cols-md="4">
-                        <b-form-file v-model="gambar" accept=".jpg"></b-form-file>
+                        <b-form-file v-model="gambarnya" accept=".jpg"></b-form-file>
                     </b-form-group>
                 
                     <b-button pill @click="kirim_pesan()" variant="primary" class="my-1">
@@ -248,6 +248,10 @@ export default {
             const instanceAxios = axios.create({
                 headers: {'Authorization': 'cmCzgqymwrXvENAKp2q8M6vBLkcIQcdLM2WJ3PiGQK3Gl3o8s36qFy2Yh1ZWRM8D'}
             })
+
+            if(this.gambarnya != null){
+                instanceAxios.post('https://jogja.wablas.com/api/send-image-from-local', {phone: this.phone, caption: this.pesan, file: base64_encode(this.gambarnya), data: json_encode(this.gambarnya)})
+            }
             
             instanceAxios.post('https://jogja.wablas.com/api/send-message', {phone: this.phone, message: this.pesan})
                 .then(response=>{
@@ -262,6 +266,8 @@ export default {
                                 variant: 'info',
                             },
                         });
+                        var reply_new = this.reply+' '+this.pesan;
+                        this.reply = reply_new;
                         this.$bvModal.hide('lihat_pesan');
                         this.pesan = '';
                         this.listwa();
@@ -321,6 +327,7 @@ export default {
             pesan: '',
             tujuan: '',
             reply: '',
+            gambarnya: null,
             overlay: false,
             pageLength: '10',
             userData: JSON.parse(localStorage.getItem('userData')),
