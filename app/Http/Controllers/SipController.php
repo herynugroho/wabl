@@ -359,14 +359,16 @@ Salam Hormat,
             //     $mod = 'IN (8) AND c.waktu > CURRENT_DATE';
             // }
         }else{
-            if($user=='3578202812930001'){//ACHMAD FAUZI
-                $mod = 'IN (0,4)';
-            }else if($user=='3578172801760002'){//BUDI NURIADI
-                $mod = 'IN (1,5)';
-            }else if($user=='3515186906900005'){//NILA EKA YUNIARTHA
-                $mod = 'IN (2,6)';
-            }else if($user=='3512073103870001'){//LIGA SETIYA MARYONO
-                $mod = 'IN (3,7)';
+            if($user=='3507205801890001'){//NURUL ISTIQOMAH
+                $mod = 'IN (0,5)';
+            }else if($user=='3578135605950001'){//HARDIYANTI ADI ASNA
+                $mod = 'IN (1,6)';
+            }else if($user=='3578241005940001'){//MOCH. FAIZ ABDUL MALIK
+                $mod = 'IN (2,7)';
+            }else if($user=='3515180108890005'){//PRAMA PRATYAKSA
+                $mod = 'IN (3,8)';
+            }else if($user=='3578193110890002'){//MOCHAMAD RIZKY FIRMANSYAH
+                $mod = 'IN (4,9)';
             }else if($user=='1111'){//SD1
                 $mod = 'IN (4)';
             }else if($user=='2222'){//SD2
@@ -379,13 +381,19 @@ Salam Hormat,
                 $mod = 'IN (0,1,2,3,4,5,6,7,8,9)';
             }
         }
+
+           // 3507205801890001 NURUL ISTIQOMAH
+        // 3578135605950001 HARDIYANTI ADI ASNA
+        // 3578241005940001 MOCH. FAIZ ABDUL MALIK
+        // 3515180108890005 PRAMA PRATYAKSA
+        // 3578193110890002 MOCHAMAD RIZKY FIRMANSYAH
         $list_wa = DB::select(DB::raw("SELECT * 
         FROM (SELECT DISTINCT ON (phone) phone, message, TIMESTAMP AT TIME ZONE 'UTC' AS waktu, status, COUNT(CASE WHEN status IS NULL THEN 1 END) AS unread, id_wa, url, reply
         FROM PUBLIC.wa
         where timestamp is not null
         GROUP BY phone, message, TIMESTAMP, status, url, id_wa, reply
         ORDER BY phone, TIMESTAMP DESC nulls LAST, status DESC nulls LAST) C
-        WHERE MOD(CAST(RIGHT(C.phone,5) AS INTEGER),8) $mod 
+        WHERE MOD(CAST(RIGHT(C.phone,5) AS INTEGER),10) $mod 
         ORDER BY c.waktu desc"));
 
         if($list_wa){
