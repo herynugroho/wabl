@@ -246,7 +246,7 @@ export default {
         },
         kirim_pesan(){
             const instanceAxios = axios.create({
-                headers: {'Authorization': 'cmCzgqymwrXvENAKp2q8M6vBLkcIQcdLM2WJ3PiGQK3Gl3o8s36qFy2Yh1ZWRM8D'}
+                headers: {'Authorization': 'oCU819TIy7RJesy05FDSP3sZwnz9VcbcRzwTz6WLXvgsmTrHhPki6wrGLtVt2eeE'}
             })
 
             if(this.gambarnya != null){
@@ -283,12 +283,12 @@ export default {
         blast_pesan(){
             const iAxios = axios.create({
                 headers:{
-                    'Authorization': 'yoYE2eLAUtukCQLgPQpQ5JPhay1UUt1PBhLSCjgDEYci2SEI0hsBxO4PZfCOyrb9',
+                    'Authorization': 'oCU819TIy7RJesy05FDSP3sZwnz9VcbcRzwTz6WLXvgsmTrHhPki6wrGLtVt2eeE',
                     'Content-Type': 'application/json'
                 }
             })
 
-            iAxios.post('https://cepogo.wablas.com/api/v2/send-bulk/text', {data: this.bulk})
+            iAxios.post('https://jogja.wablas.com/api/v2/send-bulk/text', {data: this.bulk})
         },
             
         gambar(url){

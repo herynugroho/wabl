@@ -237,10 +237,10 @@ export default {
         },
         kirim_pesan(){
             const instanceAxios = axios.create({
-                headers: {'Authorization': 'Bl1uHWXPRTdX99O1G9x6S2q6nM0ZDingi0ANGdsi78rkKZQIjYnpyHK4X01W9lhO'}
+                headers: {'Authorization': 'oCU819TIy7RJesy05FDSP3sZwnz9VcbcRzwTz6WLXvgsmTrHhPki6wrGLtVt2eeE'}
             })
             
-            instanceAxios.post('https://pati.wablas.com/api/send-message', {phone: this.phone, message: this.pesan})
+            instanceAxios.post('https://jogja.wablas.com/api/send-message', {phone: this.phone, message: this.pesan})
                 .then(response=>{
                     const respon = response.data.message;
                     if(respon == 'successfully sent text'){
@@ -262,12 +262,12 @@ export default {
         blast_pesan(){
             const iAxios = axios.create({
                 headers:{
-                    'Authorization': 'yoYE2eLAUtukCQLgPQpQ5JPhay1UUt1PBhLSCjgDEYci2SEI0hsBxO4PZfCOyrb9',
+                    'Authorization': 'oCU819TIy7RJesy05FDSP3sZwnz9VcbcRzwTz6WLXvgsmTrHhPki6wrGLtVt2eeE',
                     'Content-Type': 'application/json'
                 }
             })
 
-            iAxios.post('https://cepogo.wablas.com/api/v2/send-bulk/text', {data: this.bulk})
+            iAxios.post('https://jogja.wablas.com/api/v2/send-bulk/text', {data: this.bulk})
         },
             
         gambar(url){

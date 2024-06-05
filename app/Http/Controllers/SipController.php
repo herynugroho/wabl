@@ -182,21 +182,15 @@ class SipController extends Controller
             $id = $request->id;
             $phone = $request->phone;
             $message = $request->message;
-            $urlfile = $request->file;
-            $timestamp = $request->timestamp;
             $url = $request->url;
-            $name = $request->pushName;
-            $sender = $request->sender;
-        
+            $timestamp = $request->timestamp;
+            
             $insert = DB::table('public.wa')->insert([
                 'message_id' => $id,
                 'phone' => $phone,
                 'message' => $message,
-                'urlfile' => $urlfile,
-                'timestamp' => $timestamp,
                 'url' => $url,
-                'name' => $name,
-                'sender' => $sender
+                'timestamp' => $timestamp
             ]);
             
             if($insert){
@@ -313,7 +307,7 @@ Salam Hormat,
     }
 
     public function getchat(Request $request){
-        $chat = DB::select(DB::raw("SELECT message, TIMESTAMP AT TIME ZONE 'UTC' AS waktu, reply, reply_time , id_wa, url
+        $chat = DB::select(DB::raw("SELECT message, TIMESTAMP AS waktu, reply, reply_time , id_wa, url
         FROM PUBLIC.wa
         WHERE phone = '$request->phone'
         ORDER BY timestamp ASC")
@@ -331,69 +325,88 @@ Salam Hormat,
         $hari = date('l');
         $user = $request->user;
         $mod = 'IN (9)';
-        if($hari == 'Sunday'){
-            if($user=='3578202812930001'){//ACHMAD FAUZI
-                $mod = 'IN (0)';
-            }else if($user=='3578172801760002'){//BUDI NURIADI
-                $mod = 'IN (1)';
-            }else if($user=='3515186906900005'){//NILA EKA YUNIARTHA
-                $mod = 'IN (2)';
-            }else if($user=='3512073103870001'){//LIGA SETIYA MARYONO
-                $mod = 'IN (3)';
-            }else if($user=='1111'){//SD1
-                $mod = 'IN (4)';
-            }else if($user=='2222'){//SD2
-                $mod = 'IN (5)';
-            }else if($user=='3333'){//SMP1
-                $mod = 'IN (6)';
-            }else if($user=='4444'){//SMP2
-                $mod = 'IN (7)';}
-            }else if($user=='199105012015012001'||$user=='198509172009021001'){
-                $mod = 'IN (0,1,2,3,4,5,6,7,8,9)';
-            }
-            else if($user=='3506256705810004'){//pelayananluring
-            //     $mod = 'IN (0,9) AND c.waktu > CURRENT_DATE';
-            // }else if($user=='3578291404940001'){
-            //     $mod = 'IN (4) AND c.waktu > CURRENT_DATE';
-            // }else if($user=='3303122603840003'){
-            //     $mod = 'IN (8) AND c.waktu > CURRENT_DATE';
-            // }
-        }else{
-            if($user=='3507205801890001'){//NURUL ISTIQOMAH
-                $mod = 'IN (0,5)';
-            }else if($user=='3578135605950001'){//HARDIYANTI ADI ASNA
-                $mod = 'IN (1,6)';
-            }else if($user=='3578241005940001'){//MOCH. FAIZ ABDUL MALIK
-                $mod = 'IN (2,7)';
-            }else if($user=='3515180108890005'){//PRAMA PRATYAKSA
-                $mod = 'IN (3,8)';
-            }else if($user=='3578193110890002'){//MOCHAMAD RIZKY FIRMANSYAH
-                $mod = 'IN (4,9)';
-            }else if($user=='1111'){//SD1
-                $mod = 'IN (4)';
-            }else if($user=='2222'){//SD2
-                $mod = 'IN (5)';
-            }else if($user=='3333'){//SMP1
-                $mod = 'IN (6)';
-            }else if($user=='4444'){//SMP2
-                $mod = 'IN (7)';
-            }else if($user=='199105012015012001'||$user=='198509172009021001'){
-                $mod = 'IN (0,1,2,3,4,5,6,7,8,9)';
-            }
-        }
+        // if($hari == 'Sunday'){
+        //     if($user=='3578202812930001'){//ACHMAD FAUZI
+        //         $mod = 'IN (0)';
+        //     }else if($user=='3578172801760002'){//BUDI NURIADI
+        //         $mod = 'IN (1)';
+        //     }else if($user=='3515186906900005'){//NILA EKA YUNIARTHA
+        //         $mod = 'IN (2)';
+        //     }else if($user=='3512073103870001'){//LIGA SETIYA MARYONO
+        //         $mod = 'IN (3)';
+        //     }else if($user=='1111'){//SD1
+        //         $mod = 'IN (4)';
+        //     }else if($user=='2222'){//SD2
+        //         $mod = 'IN (5)';
+        //     }else if($user=='3333'){//SMP1
+        //         $mod = 'IN (6)';
+        //     }else if($user=='4444'){//SMP2
+        //         $mod = 'IN (7)';}
+        //     }else if($user=='199105012015012001'||$user=='198509172009021001'){
+        //         $mod = 'IN (0,1,2,3,4,5,6,7,8,9)';
+        //     }
+        //     else if($user=='3506256705810004'){//pelayananluring
+        //     //     $mod = 'IN (0,9) AND c.waktu > CURRENT_DATE';
+        //     // }else if($user=='3578291404940001'){
+        //     //     $mod = 'IN (4) AND c.waktu > CURRENT_DATE';
+        //     // }else if($user=='3303122603840003'){
+        //     //     $mod = 'IN (8) AND c.waktu > CURRENT_DATE';
+        //     // }
+        // }else{
+        //     if($user=='3507205801890001'){//NURUL ISTIQOMAH
+        //         $mod = 'IN (0,5)';
+        //     }else if($user=='3578135605950001'){//HARDIYANTI ADI ASNA
+        //         $mod = 'IN (1,6)';
+        //     }else if($user=='3578241005940001'){//MOCH. FAIZ ABDUL MALIK
+        //         $mod = 'IN (2,7)';
+        //     }else if($user=='3515180108890005'){//PRAMA PRATYAKSA
+        //         $mod = 'IN (3,8)';
+        //     }else if($user=='3578193110890002'){//MOCHAMAD RIZKY FIRMANSYAH
+        //         $mod = 'IN (4,9)';
+        //     }else if($user=='1111'){//SD1
+        //         $mod = 'IN (4)';
+        //     }else if($user=='2222'){//SD2
+        //         $mod = 'IN (5)';
+        //     }else if($user=='3333'){//SMP1
+        //         $mod = 'IN (6)';
+        //     }else if($user=='4444'){//SMP2
+        //         $mod = 'IN (7)';
+        //     }else if($user=='199105012015012001'||$user=='198509172009021001'){
+        //         $mod = 'IN (0,1,2,3,4,5,6,7,8,9)';
+        //     }
+        // }
 
            // 3507205801890001 NURUL ISTIQOMAH
         // 3578135605950001 HARDIYANTI ADI ASNA
         // 3578241005940001 MOCH. FAIZ ABDUL MALIK
         // 3515180108890005 PRAMA PRATYAKSA
         // 3578193110890002 MOCHAMAD RIZKY FIRMANSYAH
+
+        if($user=='netta2024'){
+            $mod = 'IN (4,9)';
+        }else if($user=='wego2024'){
+            $mod = 'IN (1,6)';
+        }else if($user=='siti2024'){
+            $mod = 'IN (2,10)';
+        }else if($user=='nila2024'){
+            $mod = 'IN (8,3)';
+        }else if($user=='dian2024'){
+            $mod = 'IN (0,5)';
+        }else if($user=='3515181307860004'){
+            $mod = 'IN (0,1,2,3,4,5,6,7,8,9,10,11)';
+        }else if($user=='virto2024'){
+            $mod = 'IN (7,11)';
+        }else if($user=='199105012015012001'||$user=='198509172009021001'){
+            $mod = 'IN (0,1,2,3,4,5,6,7,8,9,10,11)';
+        }
+
         $list_wa = DB::select(DB::raw("SELECT * 
-        FROM (SELECT DISTINCT ON (phone) phone, message, TIMESTAMP AT TIME ZONE 'UTC' AS waktu, status, COUNT(CASE WHEN status IS NULL THEN 1 END) AS unread, id_wa, url, reply
+        FROM (SELECT DISTINCT ON (phone) phone, message, TIMESTAMP AS waktu, status, COUNT(CASE WHEN status IS NULL THEN 1 END) AS unread, id_wa, url, reply
         FROM PUBLIC.wa
         where timestamp is not null
         GROUP BY phone, message, TIMESTAMP, status, url, id_wa, reply
         ORDER BY phone, TIMESTAMP DESC nulls LAST, status DESC nulls LAST) C
-        WHERE MOD(CAST(RIGHT(C.phone,5) AS INTEGER),10) $mod 
+        WHERE LENGTH(phone) < 14 and MOD(CAST(RIGHT(C.phone,5) AS INTEGER),12) $mod 
         ORDER BY c.waktu desc"));
 
         if($list_wa){
