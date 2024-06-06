@@ -30,3 +30,4 @@ Route::post('/getfaq', 'SipController@get_faq');
 Route::post('/getguru', 'SipController@get_guru');
 Route::post('/getchat', 'SipController@getchat');
 Route::post('/listwa', 'SipController@list_wa');
+Route::post('/uploadimg', 'SipController@uploadimg');

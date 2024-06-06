@@ -416,4 +416,32 @@ Salam Hormat,
         
             return response()->json(compact('message', 'list_wa'), 200);
     }
+
+    public function uploadimg(Request $request){
+        if($request->hasFile('gambar')){
+                $type = 'image';
+                $file = $_FILES['gambar']['tmp_name'];
+                $mime = $_FILES['gambar']['type'];
+                $name = $_FILES['gambar']['name'];
+                $data = new \CURLFile($file,$mime,$name);
+
+                $curl = curl_init();
+                $token = "oCU819TIy7RJesy05FDSP3sZwnz9VcbcRzwTz6WLXvgsmTrHhPki6wrGLtVt2eeE";
+                curl_setopt($curl, CURLOPT_HTTPHEADER,
+                    array(
+                        "Authorization: $token",
+                    )
+                );
+                curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
+                curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($curl, CURLOPT_POSTFIELDS, array('file'=>$data));
+                curl_setopt($curl, CURLOPT_URL,  "https://jogja.wablas.com/api/upload/$type");
+                curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
+                curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
+                $result = curl_exec($curl);
+                curl_close($curl);
+                $urlimg = json_decode($result,true);
+        }
+        return response()->json(compact('urlimg'), 200);
+    }
 }

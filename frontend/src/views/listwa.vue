@@ -250,7 +250,24 @@ export default {
             })
 
             if(this.gambarnya != null){
-                instanceAxios.post('https://jogja.wablas.com/api/send-image-from-local', {phone: this.phone, caption: this.pesan, file: base64_encode(this.gambarnya), data: json_encode(this.gambarnya)})
+                var bodyFormData = new FormData();
+                bodyFormData.append('gambar', this.gambarnya);
+                axios.post('api/uploadimg', bodyFormData)
+                    .then(response=>{
+                        this.urlGambar = response.data.urlimg.data.url;
+
+                        instanceAxios.post('https://jogja.wablas.com/api/send-image', {phone: this.phone, image: this.urlGambar, caption: this.pesan});
+                        this.gambarnya = null;
+
+                        this.$toast({
+                            component: ToastificationContent,
+                            props: {
+                                title: response.data.urlimg.message,
+                                icon: 'AlertIcon',
+                                variant: 'info',
+                            },
+                        });
+                    })
             }
             
             instanceAxios.post('https://jogja.wablas.com/api/send-message', {phone: this.phone, message: this.pesan})
@@ -328,6 +345,7 @@ export default {
             tujuan: '',
             reply: '',
             gambarnya: null,
+            urlGambar: '',
             overlay: false,
             pageLength: '10',
             userData: JSON.parse(localStorage.getItem('userData')),
