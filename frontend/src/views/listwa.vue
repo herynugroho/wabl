@@ -134,6 +134,12 @@
                             </span>
                             <span v-if="props.column.field == 'reply'&&props.row.reply != null&&props.row.reply != ''">
                                 <!-- <b-button rounded-circle class="text-left" variant="secondary">{{props.row.reply}}</b-button> -->
+                                <span v-if="props.row.urlfile != null" >
+                                    <b-img :src="props.row.urlfile" fluid/>
+                                    <br/>
+                                    <b-badge pill variant="info"><a :href="props.row.urlfile" target="_blank">Lihat Gambar</a></b-badge>
+                                    <br/>
+                                </span>
                                 <b-card bg-variant="secondary" text-variant="white" class="text-left my-0">
                                     <b-card-text>{{props.row.reply}}</b-card-text>
                                 </b-card>
@@ -248,7 +254,9 @@ export default {
             const instanceAxios = axios.create({
                 headers: {'Authorization': 'oCU819TIy7RJesy05FDSP3sZwnz9VcbcRzwTz6WLXvgsmTrHhPki6wrGLtVt2eeE'}
             })
-
+            if(this.pesan == ""){
+                this.pesan = "-"
+            }
             if(this.gambarnya != null){
                 var bodyFormData = new FormData();
                 bodyFormData.append('gambar', this.gambarnya);
@@ -274,7 +282,7 @@ export default {
                 .then(response=>{
                     const respon = response.data.status;
                     if(respon == true){
-                        axios.post('/api/updatewa', {phone: this.phone, nama: this.userData.username, pesan: this.pesan, id: this.id_wa, reply:this.reply})
+                        axios.post('/api/updatewa', {phone: this.phone, nama: this.userData.username, pesan: this.pesan, id: this.id_wa, reply:this.reply, urlfile: this.urlGambar})
                         this.$toast({
                             component: ToastificationContent,
                             props: {

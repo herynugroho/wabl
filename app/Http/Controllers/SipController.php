@@ -244,11 +244,11 @@ class SipController extends Controller
 
         if($request->reply == null){
             $wa_stat = DB::select(DB::raw("UPDATE PUBLIC.wa
-            SET status = 0, reply_by = '$request->nama', reply = '$request->pesan', reply_time = current_timestamp
+            SET status = 0, reply_by = '$request->nama', reply = '$request->pesan', reply_time = current_timestamp, urlfile = '$request->urlfile'
             WHERE phone = '$request->phone' AND id_wa = $request->id"));
         }else{
             $wa_stat = DB::select(DB::raw("UPDATE PUBLIC.wa
-            SET status = 0, reply_by = '$request->nama', reply = '$baru', reply_time = current_timestamp
+            SET status = 0, reply_by = '$request->nama', reply = '$baru', reply_time = current_timestamp, urlfile = '$request->urlfile'
             WHERE phone = '$request->phone' AND id_wa = $request->id"));
         }
     }
@@ -307,7 +307,7 @@ Salam Hormat,
     }
 
     public function getchat(Request $request){
-        $chat = DB::select(DB::raw("SELECT message, TIMESTAMP AS waktu, reply, reply_time , id_wa, url
+        $chat = DB::select(DB::raw("SELECT message, TIMESTAMP AS waktu, reply, reply_time , id_wa, url, urlfile
         FROM PUBLIC.wa
         WHERE phone = '$request->phone'
         ORDER BY timestamp ASC")
