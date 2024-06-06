@@ -295,6 +295,8 @@ export default {
                         this.reply = reply_new;
                         this.$bvModal.hide('lihat_pesan');
                         this.pesan = '';
+                        this.urlGambar = null;
+                        this.gambarnya = null;
                         this.listwa();
                         this.listchat(this.phone);
                         this.$bvModal.show('lihat_pesan');
@@ -353,7 +355,7 @@ export default {
             tujuan: '',
             reply: '',
             gambarnya: null,
-            urlGambar: '',
+            urlGambar: null,
             overlay: false,
             pageLength: '10',
             userData: JSON.parse(localStorage.getItem('userData')),
