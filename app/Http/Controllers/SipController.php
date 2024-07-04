@@ -389,9 +389,9 @@ Salam Hormat,
         }else if($user=='siti2024'){
             $mod = 'IN (2,10)';
         }else if($user=='nila2024'){
-            $mod = 'IN (8,3)';
+            $mod = 'IN (12,13)';
         }else if($user=='dian2024'){
-            $mod = 'IN (0,5)';
+            $mod = 'IN (0,5,8,3)';
         }else if($user=='3515181307860004'){
             $mod = 'IN (0,1,2,3,4,5,6,7,8,9,10,11)';
         }else if($user=='virto2024'){
