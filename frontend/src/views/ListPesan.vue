@@ -237,7 +237,7 @@ export default {
         },
         kirim_pesan(){
             const instanceAxios = axios.create({
-                headers: {'Authorization': 'oCU819TIy7RJesy05FDSP3sZwnz9VcbcRzwTz6WLXvgsmTrHhPki6wrGLtVt2eeE'}
+                headers: {'Authorization': '699RAeqDRuo6blRVlAPVaPnpyoXWsxytyRPlhSa5tvoQJyRA1aQpbQE'}
             })
             
             instanceAxios.post('https://jogja.wablas.com/api/send-message', {phone: this.phone, message: this.pesan})
@@ -262,7 +262,7 @@ export default {
         blast_pesan(){
             const iAxios = axios.create({
                 headers:{
-                    'Authorization': 'oCU819TIy7RJesy05FDSP3sZwnz9VcbcRzwTz6WLXvgsmTrHhPki6wrGLtVt2eeE',
+                    'Authorization': '699RAeqDRuo6blRVlAPVaPnpyoXWsxytyRPlhSa5tvoQJyRA1aQpbQE',
                     'Content-Type': 'application/json'
                 }
             })

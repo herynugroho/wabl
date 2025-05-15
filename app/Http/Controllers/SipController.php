@@ -184,13 +184,15 @@ class SipController extends Controller
             $message = $request->message;
             $url = $request->url;
             $timestamp = $request->timestamp;
+            $nama = $request->pushName;
             
             $insert = DB::table('public.wa')->insert([
                 'message_id' => $id,
                 'phone' => $phone,
                 'message' => $message,
                 'url' => $url,
-                'timestamp' => $timestamp
+                'timestamp' => $timestamp,
+                'nama' => $nama,
             ]);
             
             if($insert){
@@ -382,19 +384,19 @@ Salam Hormat,
         // 3515180108890005 PRAMA PRATYAKSA
         // 3578193110890002 MOCHAMAD RIZKY FIRMANSYAH
 
-        if($user=='netta2024'){
+        if($user=='netta2025'){
             $mod = 'IN (4,9)';
-        }else if($user=='wego2024'){
+        }else if($user=='versa2025'){
             $mod = 'IN (1,6)';
-        }else if($user=='siti2024'){
+        }else if($user=='siti2025'){
             $mod = 'IN (2,10)';
-        }else if($user=='nila2024'){
-            $mod = 'IN (12,13)';
-        }else if($user=='dian2024'){
-            $mod = 'IN (0,5,8,3)';
+        }else if($user=='nila2025'){
+            $mod = 'IN (8,3)';
+        }else if($user=='dian2025'){
+            $mod = 'IN (0,5)';
         }else if($user=='3515181307860004'){
             $mod = 'IN (0,1,2,3,4,5,6,7,8,9,10,11)';
-        }else if($user=='virto2024'){
+        }else if($user=='virto2025'){
             $mod = 'IN (7,11)';
         }else if($user=='199105012015012001'||$user=='198509172009021001'){
             $mod = 'IN (0,1,2,3,4,5,6,7,8,9,10,11)';
@@ -426,7 +428,7 @@ Salam Hormat,
                 $data = new \CURLFile($file,$mime,$name);
 
                 $curl = curl_init();
-                $token = "oCU819TIy7RJesy05FDSP3sZwnz9VcbcRzwTz6WLXvgsmTrHhPki6wrGLtVt2eeE";
+                $token = "699RAeqDRuo6blRVlAPVaPnpyoXWsxytyRPlhSa5tvoQJyRA1aQpbQE";
                 curl_setopt($curl, CURLOPT_HTTPHEADER,
                     array(
                         "Authorization: $token",

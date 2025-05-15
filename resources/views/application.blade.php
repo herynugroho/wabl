@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<base href="/wabl/">
 <html lang="en">
 <head>
   <meta charset="utf-8">
