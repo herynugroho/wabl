@@ -428,7 +428,7 @@ Salam Hormat,
                 $data = new \CURLFile($file,$mime,$name);
 
                 $curl = curl_init();
-                $token = "699RAeqDRuo6blRVlAPVaPnpyoXWsxytyRPlhSa5tvoQJyRA1aQpbQE";
+                $token = "699RAeqDRuo6blRVlAPVaPnpyoXWsxytyRPlhSa5tvoQJyRA1aQpbQE.F7lImmyU";
                 curl_setopt($curl, CURLOPT_HTTPHEADER,
                     array(
                         "Authorization: $token",

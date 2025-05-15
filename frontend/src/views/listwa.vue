@@ -252,7 +252,7 @@ export default {
         },
         kirim_pesan(){
             const instanceAxios = axios.create({
-                headers: {'Authorization': '699RAeqDRuo6blRVlAPVaPnpyoXWsxytyRPlhSa5tvoQJyRA1aQpbQE'}
+                headers: {'Authorization': '699RAeqDRuo6blRVlAPVaPnpyoXWsxytyRPlhSa5tvoQJyRA1aQpbQE.F7lImmyU'}
             })
             if(this.pesan == ""){
                 this.pesan = "-"
@@ -310,7 +310,7 @@ export default {
         blast_pesan(){
             const iAxios = axios.create({
                 headers:{
-                    'Authorization': '699RAeqDRuo6blRVlAPVaPnpyoXWsxytyRPlhSa5tvoQJyRA1aQpbQE',
+                    'Authorization': '699RAeqDRuo6blRVlAPVaPnpyoXWsxytyRPlhSa5tvoQJyRA1aQpbQE.F7lImmyU',
                     'Content-Type': 'application/json'
                 }
             })
