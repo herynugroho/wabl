@@ -31,3 +31,4 @@ Route::post('/getguru', 'SipController@get_guru');
 Route::post('/getchat', 'SipController@getchat');
 Route::post('/listwa', 'SipController@list_wa');
 Route::post('/uploadimg', 'SipController@uploadimg');
+Route::get('/rekap-wa-2025', 'SipController@rekap_wa_2025');

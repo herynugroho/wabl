@@ -419,6 +419,66 @@ Salam Hormat,
             return response()->json(compact('message', 'list_wa'), 200);
     }
 
+    public function rekap_wa_2025(Request $request)
+    {
+        // Mapping user 2025 ke $mod
+        $user_mods = [
+            'netta2025' => 'IN (4,9)',
+            'versa2025' => 'IN (1,6)',
+            'siti2025'  => 'IN (2,10)',
+            'nila2025'  => 'IN (8,3)',
+            'dian2025'  => 'IN (0,5)',
+            'virto2025' => 'IN (7,11)',
+        ];
+
+        $rekap = [];
+        foreach ($user_mods as $user => $mod) {
+            // Total nomor unik
+            $total = DB::selectOne("
+                SELECT COUNT(DISTINCT phone) as total_nomor
+                FROM PUBLIC.wa
+                WHERE LENGTH(phone) < 14
+                AND MOD(CAST(RIGHT(phone,5) AS INTEGER),12) $mod
+            ")->total_nomor ?? 0;
+
+            // Total nomor dibalas (ada minimal satu reply_by tidak null)
+            $dibalas = DB::selectOne("
+                SELECT COUNT(*) as total
+                FROM (
+                    SELECT phone
+                    FROM PUBLIC.wa
+                    WHERE LENGTH(phone) < 14
+                    AND MOD(CAST(RIGHT(phone,5) AS INTEGER),12) $mod
+                    GROUP BY phone
+                    HAVING COUNT(*) FILTER (WHERE reply_by IS NOT NULL) > 0
+                ) x
+            ")->total ?? 0;
+
+            // Total nomor belum dibalas (semua reply_by null)
+            $blm_dibalas = DB::selectOne("
+                SELECT COUNT(*) as total
+                FROM (
+                    SELECT phone
+                    FROM PUBLIC.wa
+                    WHERE LENGTH(phone) < 14
+                    AND MOD(CAST(RIGHT(phone,5) AS INTEGER),12) $mod
+                    GROUP BY phone
+                    HAVING COUNT(*) FILTER (WHERE reply_by IS NOT NULL) = 0
+                ) x
+            ")->total ?? 0;
+
+            $rekap[] = [
+                'user' => $user,
+                'total_nomor' => $total,
+                'total_nomor_dibalas' => $dibalas,
+                'total_nomor_blm_dibalas' => $blm_dibalas,
+            ];
+        }
+
+        $message = "success";
+        return response()->json(compact('message', 'rekap'), 200);
+    }
+
     public function uploadimg(Request $request){
         if($request->hasFile('gambar')){
                 $type = 'image';
