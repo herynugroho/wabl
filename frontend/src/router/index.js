@@ -34,6 +34,34 @@ const router = new VueRouter({
       },
     },
     {
+      path: '/chat-demo',
+      name: 'chat-demo',
+      component: () => import('@/views/ChatDemo.vue'),
+      meta: {
+        pageTitle: 'Demo Chat WhatsApp',
+        breadcrumb: [
+          {
+            text: 'Demo Chat WhatsApp',
+            active: true,
+          },
+        ],
+      },
+    },
+    {
+      path: '/chat-app',
+      name: 'chat-app',
+      component: () => import('@/views/ChatApp.vue'),
+      meta: {
+        pageTitle: 'Wablas SPMB 2025',
+        breadcrumb: [
+          {
+            text: 'Wablas SPMB 2025',
+            active: true,
+          },
+        ],
+      },
+    },
+    {
       path: '/daftar_pesan',
       name: 'daftar_pesan',
       component: () => import('@/views/ListPesan.vue'),
@@ -56,6 +84,20 @@ const router = new VueRouter({
         breadcrumb: [
           {
             text: 'Incoming Whatsapp',
+            active: true,
+          },
+        ],
+      },
+    },
+    {
+      path: '/chat-app',
+      name: 'chat-app',
+      component: () => import('@/views/ChatApp.vue'),
+      meta: {
+        pageTitle: 'Pesan Masuk',
+        breadcrumb: [
+          {
+            text: 'Pesan Masuk',
             active: true,
           },
         ],

@@ -26,6 +26,11 @@ export default [
         action: 'read', 
         resource: 'ACL',
       },
+      {
+        title: 'Wablas SPMB 2025',
+        route: 'chat-app',
+        component: () => import('@/views/ChatApp.vue'),
+      },
       // {
       //   title: 'Chat',
       //   route: 'chat',
