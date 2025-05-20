@@ -6,9 +6,29 @@
         class="wa-sidebar"
         v-show="showList || !isMobile"
       >
+        <!-- Search & Filter -->
+        <div class="wa-sidebar-tools p-2 pb-1">
+          <b-input-group size="sm" class="mb-2">
+            <b-form-input
+              v-model="searchText"
+              placeholder="Cari nama/nomor/pesan..."
+              autocomplete="off"
+            />
+            <b-input-group-append>
+              <b-button @click="searchText = ''" variant="light" v-if="searchText">
+                <feather-icon icon="XIcon" size="16"/>
+              </b-button>
+            </b-input-group-append>
+          </b-input-group>
+          <b-button-group size="sm" class="mb-1 w-100">
+            <b-button :variant="filterType==='terbaru'?'primary':'outline-primary'" @click="filterType='terbaru'">Terbaru</b-button>
+            <b-button :variant="filterType==='terlama'?'primary':'outline-primary'" @click="filterType='terlama'">Terlama</b-button>
+            <b-button :variant="filterType==='belum'?'primary':'outline-primary'" @click="filterType='belum'">Belum Terbalas</b-button>
+          </b-button-group>
+        </div>
         <b-list-group>
           <b-list-group-item
-            v-for="item in listwa_rows"
+            v-for="item in filteredListwaRows"
             :key="item.phone"
             :active="item.phone === phone"
             @click="handleSelectChat(item)"
@@ -123,7 +143,7 @@
 </template>
 
 <script>
-import { BCard, BListGroup, BListGroupItem, BBadge, BImg, BFormTextarea, BFormFile, BButton, BModal } from 'bootstrap-vue'
+import { BCard, BListGroup, BListGroupItem, BBadge, BImg, BFormTextarea, BFormFile, BButton, BModal, BInputGroup, BInputGroupAppend, BFormInput, BButtonGroup } from 'bootstrap-vue'
 import FeatherIcon from '../@core/components/feather-icon/FeatherIcon.vue'
 import axios from 'axios'
 import ToastificationContent from '@core/components/toastification/ToastificationContent.vue'
@@ -139,7 +159,11 @@ export default {
     BFormFile,
     BButton,
     BModal,
-    FeatherIcon
+    FeatherIcon,
+    BInputGroup,
+    BInputGroupAppend,
+    BFormInput,
+    BButtonGroup,
   },
   data() {
     return {
@@ -157,6 +181,9 @@ export default {
       refreshInterval: null,
       showList: true,
       isMobile: false,
+      isSending: false,
+      searchText: '',
+      filterType: 'terbaru',
     }
   },
   computed: {
@@ -198,7 +225,34 @@ export default {
     getActiveNameOrPhone() {
       const found = this.listwa_rows.find(item => item.phone === this.phone)
       return found ? (found.name || found.phone) : this.phone
-    }
+    },
+    filteredListwaRows() {
+      let rows = this.listwa_rows
+
+      // Filter search
+      if (this.searchText) {
+        const s = this.searchText.toLowerCase()
+        rows = rows.filter(item =>
+          (item.name && item.name.toLowerCase().includes(s)) ||
+          (item.phone && item.phone.toLowerCase().includes(s)) ||
+          (item.message && item.message.toLowerCase().includes(s))
+        )
+      }
+
+      // Filter status
+      if (this.filterType === 'belum') {
+        rows = rows.filter(item => !item.reply || item.reply === '')
+      }
+
+      // Sort
+      if (this.filterType === 'terbaru') {
+        rows = rows.slice().sort((a, b) => new Date(b.waktu) - new Date(a.waktu))
+      } else if (this.filterType === 'terlama') {
+        rows = rows.slice().sort((a, b) => new Date(a.waktu) - new Date(b.waktu))
+      }
+
+      return rows
+    },
   },
   mounted() {
     this.listwa()
@@ -320,58 +374,62 @@ export default {
       this.listwa()
       if (this.phone) this.listchat(this.phone)
     },
-    kirim_pesan() {
-      const instanceAxios = axios.create({
-        headers: { 'Authorization': '699RAeqDRuo6blRVlAPVaPnpyoXWsxytyRPlhSa5tvoQJyRA1aQpbQE.F7lImmyU' }
-      })
+    async kirim_pesan() {
+      if (this.isSending) return
+      this.isSending = true
+
       const SPLIT = '|||--WABLASSPLIT--|||'
-      if (this.pesan == "") {
-        this.pesan = "-"
-      }
-      if (this.gambarnya != null) {
-        var bodyFormData = new FormData();
-        bodyFormData.append('gambar', this.gambarnya);
-        axios.post('api/uploadimg', bodyFormData)
-          .then(response => {
-            this.urlGambar = response.data.urlimg.data.url;
 
-            instanceAxios.post('https://jogja.wablas.com/api/send-image', { phone: this.phone, image: this.urlGambar, caption: this.pesan });
-            this.gambarnya = null;
+      try {
+        // Jika ada gambar, kirim ke backend untuk diteruskan ke Wablas
+        if (this.gambarnya) {
+          const bodyFormData = new FormData();
+          bodyFormData.append('gambar', this.gambarnya);
+          bodyFormData.append('phone', this.phone);
+          bodyFormData.append('caption', this.pesan || '');
 
-            this.$toast && this.$toast({
-              component: ToastificationContent,
-              props: {
-                title: response.data.urlimg.message,
-                icon: 'AlertIcon',
-                variant: 'info',
-              },
-            });
+          // Kirim ke backend (uploadimg), backend akan langsung kirim ke Wablas
+          const response = await axios.post('/api/uploadimg', bodyFormData);
+
+          // Optional: tampilkan notifikasi dari backend
+          this.$toast && this.$toast({
+            component: ToastificationContent,
+            props: {
+              title: response.data.message || 'Gambar dikirim!',
+              icon: 'AlertIcon',
+              variant: response.data.status ? 'info' : 'danger',
+            },
+          });
+
+          this.gambarnya = null;
+          this.urlGambar = null;
+        }
+
+        // Kirim pesan teks (jika ada dan tidak sedang kirim gambar)
+        if (this.pesan && !this.gambarnya) {
+          const instanceAxios = axios.create({
+            headers: { 'Authorization': '699RAeqDRuo6blRVlAPVaPnpyoXWsxytyRPlhSa5tvoQJyRA1aQpbQE.F7lImmyU' }
           })
-      }
-
-      instanceAxios.post('https://jogja.wablas.com/api/send-message', { phone: this.phone, message: this.pesan })
-        .then(response => {
-          const respon = response.data.status;
-          if (respon == true) {
-            // Tambahkan pemisah sebelum pesan baru jika reply sudah ada isinya
+          const responseMsg = await instanceAxios.post('https://jogja.wablas.com/api/send-message', { phone: this.phone, message: this.pesan })
+          if (responseMsg.data.status === true) {
             let reply_new = this.reply
             if (reply_new && reply_new.trim() !== '') {
               reply_new += SPLIT + this.pesan
             } else {
               reply_new = this.pesan
             }
-            axios.post('/api/updatewa', {
+            await axios.post('/api/updatewa', {
               phone: this.phone,
               nama: this.userData.username,
               pesan: this.pesan,
               id: this.id_wa,
               reply: reply_new,
-              urlfile: this.urlGambar
+              urlfile: null
             })
             this.$toast && this.$toast({
               component: ToastificationContent,
               props: {
-                title: response.data.message,
+                title: responseMsg.data.message,
                 icon: 'AlertIcon',
                 variant: 'info',
               },
@@ -380,11 +438,13 @@ export default {
             this.pesan = '';
             this.urlGambar = null;
             this.gambarnya = null;
-            this.refreshAll()
+            await this.refreshAll()
           }
-          this.refreshAll()
-        })
-      this.refreshAll()
+        }
+      } catch (e) {
+        // Optional: tampilkan error
+      }
+      this.isSending = false
     }
   }
 }
@@ -406,6 +466,13 @@ export default {
   overflow-y: auto;
   flex-shrink: 0;
 }
+.wa-sidebar-tools {
+  background: #fafdff;
+  border-bottom: 1px solid #e3eaf7;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
 .wa-sidebar-item {
   border: none !important;
   border-bottom: 1px solid #e3eaf7 !important;
@@ -414,7 +481,7 @@ export default {
 }
 .wa-sidebar-item.active,
 .wa-sidebar-item:hover {
-  background: #2e6da4 !important; /* biru gelap */
+  background: #2e6da4 !important;
   color: #fff !important;
 }
 .wa-sidebar-item.active .font-weight-bold,
@@ -554,7 +621,6 @@ export default {
     max-width: 100%;
     border-right: none;
     border-bottom: 1px solid #e3eaf7;
-    /* Tampilkan sidebar hampir full tinggi layar, dikurangi header dan input sticky */
     max-height: calc(100vh - 60px);
     min-height: 80px;
     box-shadow: 0 2px 8px rgba(46,109,164,0.07);
@@ -565,7 +631,7 @@ export default {
   }
   .wa-main {
     padding: 0 4px;
-    padding-bottom: 70px; /* beri ruang agar bubble tidak ketutup input sticky */
+    padding-bottom: 70px;
   }
   .wa-chat-header-mobile {
     display: flex;

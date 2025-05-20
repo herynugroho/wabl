@@ -240,19 +240,54 @@ class SipController extends Controller
         return response()->json(compact('message', 'wa_message'), 200);
     }
 
-    public function updatewa(Request $request){
-        $baru = $request->reply . "\n \n" . $request->pesan;
-        // return response()->json(compact('baru'), 200);
+    // public function updatewa(Request $request){
+    //     $baru = $request->reply . "\n \n" . $request->pesan;
+    //     // return response()->json(compact('baru'), 200);
 
-        if($request->reply == null){
-            $wa_stat = DB::select(DB::raw("UPDATE PUBLIC.wa
-            SET status = 0, reply_by = '$request->nama', reply = '$request->pesan', reply_time = current_timestamp, urlfile = '$request->urlfile'
-            WHERE phone = '$request->phone' AND id_wa = $request->id"));
-        }else{
-            $wa_stat = DB::select(DB::raw("UPDATE PUBLIC.wa
-            SET status = 0, reply_by = '$request->nama', reply = '$baru', reply_time = current_timestamp, urlfile = '$request->urlfile'
-            WHERE phone = '$request->phone' AND id_wa = $request->id"));
+    //     if($request->reply == null){
+    //         $wa_stat = DB::select(DB::raw("UPDATE PUBLIC.wa
+    //         SET status = 0, reply_by = '$request->nama', reply = '$request->pesan', reply_time = current_timestamp, urlfile = '$request->urlfile'
+    //         WHERE phone = '$request->phone' AND id_wa = $request->id"));
+    //     }else{
+    //         $wa_stat = DB::select(DB::raw("UPDATE PUBLIC.wa
+    //         SET status = 0, reply_by = '$request->nama', reply = '$baru', reply_time = current_timestamp, urlfile = '$request->urlfile'
+    //         WHERE phone = '$request->phone' AND id_wa = $request->id"));
+    //     }
+    //     // $wa_stat = DB::select(DB::raw("UPDATE PUBLIC.wa
+    //     // SET status = 0, reply_by = '$request->nama', reply = '$request->pesan', reply_time = current_timestamp, urlfile = '$request->urlfile'
+    //     // WHERE phone = '$request->phone' AND id_wa = $request->id"));
+    // }
+
+    public function updatewa(Request $request){
+        $pemisah = '|||--WABLASSPLIT--|||';
+        $pesanBaru = trim($request->pesan);
+
+        // Ambil data lama
+        $row = DB::table('public.wa')->where('phone', $request->phone)->where('id_wa', $request->id)->first();
+
+        // Ambil balasan terakhir dari kolom reply
+        $replyLama = $row ? $row->reply : '';
+        $replyTerakhir = '';
+        if ($replyLama) {
+            $arr = explode($pemisah, $replyLama);
+            $replyTerakhir = trim(end($arr));
         }
+
+        // Jika balasan terakhir sama dengan pesan baru, jangan update
+        if ($replyTerakhir === $pesanBaru) {
+            return response()->json(['status' => true, 'message' => 'Balasan sama, tidak update ulang']);
+        }
+
+        // Gabungkan reply lama dengan pesan baru
+        $baru = $replyLama ? $replyLama . $pemisah . $pesanBaru : $pesanBaru;
+
+        $wa_stat = DB::update("UPDATE PUBLIC.wa
+            SET status = 0, reply_by = ?, reply = ?, reply_time = current_timestamp, urlfile = ?
+            WHERE phone = ? AND id_wa = ?",
+            [$request->nama, $baru, $request->urlfile, $request->phone, $request->id]
+        );
+
+        return response()->json(['status' => true, 'message' => 'Update berhasil']);
     }
 
     public function waselesai(Request $request){
@@ -479,31 +514,40 @@ Salam Hormat,
         return response()->json(compact('message', 'rekap'), 200);
     }
 
-    public function uploadimg(Request $request){
-        if($request->hasFile('gambar')){
-                $type = 'image';
-                $file = $_FILES['gambar']['tmp_name'];
-                $mime = $_FILES['gambar']['type'];
-                $name = $_FILES['gambar']['name'];
-                $data = new \CURLFile($file,$mime,$name);
+    public function uploadimg(Request $request)
+    {
+        if ($request->hasFile('gambar')) {
+            $token = "699RAeqDRuo6blRVlAPVaPnpyoXWsxytyRPlhSa5tvoQJyRA1aQpbQE";
+            $secret_key = "F7lImmyU";
+            $phone = $request->input('phone');
+            $caption = $request->input('caption', '');
 
-                $curl = curl_init();
-                $token = "699RAeqDRuo6blRVlAPVaPnpyoXWsxytyRPlhSa5tvoQJyRA1aQpbQE.F7lImmyU";
-                curl_setopt($curl, CURLOPT_HTTPHEADER,
-                    array(
-                        "Authorization: $token",
-                    )
-                );
-                curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
-                curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-                curl_setopt($curl, CURLOPT_POSTFIELDS, array('file'=>$data));
-                curl_setopt($curl, CURLOPT_URL,  "https://jogja.wablas.com/api/upload/$type");
-                curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
-                curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
-                $result = curl_exec($curl);
-                curl_close($curl);
-                $urlimg = json_decode($result,true);
+            $file = $request->file('gambar')->get();
+            $file_base64 = base64_encode($file);
+
+            $params = [
+                'phone' => $phone,
+                'caption' => $caption,
+                'file' => $file_base64,
+                'data' => json_encode($_FILES['gambar']),
+            ];
+
+            $curl = curl_init();
+            curl_setopt($curl, CURLOPT_HTTPHEADER, [
+                "Authorization: $token.$secret_key"
+            ]);
+            curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($params));
+            curl_setopt($curl, CURLOPT_URL, "https://jogja.wablas.com/api/send-image-from-local");
+            curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
+            $result = curl_exec($curl);
+            curl_close($curl);
+
+            return response()->json(json_decode($result, true), 200);
+        } else {
+            return response()->json(['status' => false, 'message' => 'Tidak ada file gambar yang diupload'], 400);
         }
-        return response()->json(compact('urlimg'), 200);
     }
 }
