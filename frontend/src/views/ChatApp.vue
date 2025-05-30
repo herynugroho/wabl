@@ -241,7 +241,7 @@ export default {
 
       // Filter status
       if (this.filterType === 'belum') {
-        rows = rows.filter(item => !item.reply || item.reply === '')
+        rows = rows.filter(item => !item.reply || item.reply === '' || item.reply === null)
       }
 
       // Sort
