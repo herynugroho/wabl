@@ -184,15 +184,13 @@ class SipController extends Controller
             $message = $request->message;
             $url = $request->url;
             $timestamp = $request->timestamp;
-            $nama = $request->pushName;
             
             $insert = DB::table('public.wa')->insert([
                 'message_id' => $id,
                 'phone' => $phone,
                 'message' => $message,
                 'url' => $url,
-                'timestamp' => $timestamp,
-                'nama' => $nama,
+                'timestamp' => $timestamp
             ]);
             
             if($insert){
