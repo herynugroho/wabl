@@ -278,7 +278,7 @@ export default {
                     })
             }
             
-            instanceAxios.post('https://jogja.wablas.com/api/send-message', {phone: this.phone, message: this.pesan})
+            instanceAxios.post('/send-message', {phone: this.phone, message: this.pesan})
                 .then(response=>{
                     const respon = response.data.status;
                     if(respon == true){
@@ -307,6 +307,7 @@ export default {
                 this.listwa();
                 this.listchat(this.phone);
         },
+
         blast_pesan(){
             const iAxios = axios.create({
                 headers:{

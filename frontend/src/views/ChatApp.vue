@@ -410,7 +410,7 @@ export default {
           const instanceAxios = axios.create({
             headers: { 'Authorization': '699RAeqDRuo6blRVlAPVaPnpyoXWsxytyRPlhSa5tvoQJyRA1aQpbQE.F7lImmyU' }
           })
-          const responseMsg = await instanceAxios.post('https://jogja.wablas.com/api/send-message', { phone: this.phone, message: this.pesan })
+          const responseMsg = await instanceAxios.post('/api/send_message', { phone: this.phone, message: this.pesan })
           if (responseMsg.data.status === true) {
             let reply_new = this.reply
             if (reply_new && reply_new.trim() !== '') {

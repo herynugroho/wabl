@@ -548,4 +548,22 @@ Salam Hormat,
             return response()->json(['status' => false, 'message' => 'Tidak ada file gambar yang diupload'], 400);
         }
     }
+
+    public function send_message(Request $request)
+    {
+        $token = "699RAeqDRuo6blRVlAPVaPnpyoXWsxytyRPlhSa5tvoQJyRA1aQpbQE";
+        $secret_key = "F7lImmyU";
+        $phone = $request->input('phone'); // contoh: 628122364xxxx
+        $message = urlencode($request->input('message', '')); // pastikan di-encode
+
+        $url = "https://jogja.wablas.com/api/send-message?token=$token.$secret_key&phone=$phone&message=$message";
+
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        $result = curl_exec($curl);
+        curl_close($curl);
+
+        return response()->json(json_decode($result, true), 200);
+    }
 }
